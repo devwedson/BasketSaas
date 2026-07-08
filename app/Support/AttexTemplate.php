@@ -9,7 +9,7 @@ class AttexTemplate
         $file = rtrim(config('attex.assets.template_path'), DIRECTORY_SEPARATOR).'/auth-login.html';
 
         if (! file_exists($file)) {
-            return '';
+            return view('partials.attex.auth-background')->render();
         }
 
         $html = file_get_contents($file);
@@ -18,7 +18,7 @@ class AttexTemplate
             return $this->rewriteAttexAssets(trim($matches[1]));
         }
 
-        return '';
+        return view('partials.attex.auth-background')->render();
     }
 
     private function rewriteAttexAssets(string $html): string

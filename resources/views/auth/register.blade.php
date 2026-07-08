@@ -1,5 +1,7 @@
 @extends('layouts.attex.auth')
 
+@section('title', 'Criar Conta')
+
 @section('content')
 <div class="card overflow-hidden">
     <div class="p-9 bg-primary">
@@ -45,19 +47,17 @@
             </div>
 
             <div class="text-center mb-6">
-                <button class="btn bg-primary text-white w-full" type="submit">Criar Conta</button>
+                <button class="btn bg-primary text-white" type="submit">Criar Conta</button>
             </div>
         </form>
     </div>
 </div>
 
-<div class="text-center my-4 space-y-2">
-    <p class="text-sm text-gray-500 dark:text-gray-400">Já tem conta? <a href="{{ route('login') }}" class="underline underline-offset-4">Entrar</a></p>
-    <a href="{{ route('landing') }}" class="text-muted text-sm underline underline-offset-4 block">Voltar ao site</a>
-    <button id="light-dark-mode" type="button" class="mt-3 text-sm text-gray-500 dark:text-gray-400 hover:text-primary inline-flex items-center gap-1.5 mx-auto">
-        <i class="ri-moon-line dark:hidden"></i>
-        <i class="ri-sun-line hidden dark:inline"></i>
-        Alternar tema
-    </button>
-</div>
+@include('partials.attex.auth-footer-links', [
+    'registerText' => 'Já tem conta?',
+    'registerUrl' => route('login'),
+    'registerLinkLabel' => 'Entrar',
+    'secondaryUrl' => route('landing'),
+    'secondaryLabel' => 'Voltar ao site',
+])
 @endsection

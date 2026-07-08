@@ -1,5 +1,7 @@
 @extends('layouts.attex.auth')
 
+@section('title', 'Ativar Conta')
+
 @section('content')
 <div class="card overflow-hidden">
     <div class="p-9 bg-primary">
@@ -56,11 +58,8 @@
     </div>
 </div>
 
-<div class="text-center my-4">
-    <button id="light-dark-mode" type="button" class="text-sm text-gray-500 dark:text-gray-400 hover:text-primary inline-flex items-center gap-1.5 mx-auto">
-        <i class="ri-moon-line dark:hidden"></i>
-        <i class="ri-sun-line hidden dark:inline"></i>
-        Alternar tema
-    </button>
-</div>
+@include('partials.attex.auth-footer-links', [
+    'secondaryUrl' => route('landing'),
+    'secondaryLabel' => 'Voltar ao site',
+])
 @endsection

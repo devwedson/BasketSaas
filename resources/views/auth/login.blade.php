@@ -1,5 +1,7 @@
 @extends('layouts.attex.auth')
 
+@section('title', config('attex.auth.title'))
+
 @section('content')
 <div class="card overflow-hidden">
     <div class="p-9 bg-primary">
@@ -33,35 +35,33 @@
                 <label for="password" class="font-semibold text-gray-500 dark:text-gray-400">Senha</label>
                 <div class="flex items-center">
                     <input type="password" id="password" name="password" class="form-input rounded-e-none" required autocomplete="current-password" placeholder="Sua senha">
-                    <button type="button" class="px-3 py-1 border rounded-e-md -ms-px dark:border-white/10" data-toggle-password aria-label="Mostrar senha">
+                    <button type="button" class="px-3 py-1 border rounded-e-md -ms-px dark:border-white/10 bg-transparent" data-toggle-password aria-label="Mostrar senha">
                         <i class="ri-eye-line text-lg"></i>
                     </button>
                 </div>
             </div>
 
             <div class="mb-6">
-                <label class="flex items-center">
+                <div class="flex items-center">
                     <input type="checkbox" class="form-checkbox rounded text-primary" id="remember" name="remember" value="1" {{ old('remember') ? 'checked' : '' }}>
-                    <span class="ms-2" for="remember">Lembrar-me</span>
-                </label>
+                    <label class="ms-2" for="remember">Lembrar-me</label>
+                </div>
             </div>
 
             <div class="text-center mb-6">
-                <button class="btn bg-primary text-white w-full" type="submit">Entrar</button>
+                <button class="btn bg-primary text-white" type="submit">Entrar</button>
             </div>
         </form>
     </div>
 </div>
 
-<div class="text-center my-4 space-y-2">
-    <p class="text-sm text-gray-500 dark:text-gray-400">Não tem conta? <a href="{{ route('register') }}" class="underline underline-offset-4">Criar conta</a></p>
-    <a href="{{ route('landing') }}" class="text-muted text-sm underline underline-offset-4 block">Voltar ao site</a>
-    <button id="light-dark-mode" type="button" class="mt-3 text-sm text-gray-500 dark:text-gray-400 hover:text-primary inline-flex items-center gap-1.5 mx-auto">
-        <i class="ri-moon-line dark:hidden"></i>
-        <i class="ri-sun-line hidden dark:inline"></i>
-        Alternar tema
-    </button>
-</div>
+@include('partials.attex.auth-footer-links', [
+    'registerText' => 'Não tem conta?',
+    'registerUrl' => route('register'),
+    'registerLinkLabel' => 'Criar conta',
+    'secondaryUrl' => route('landing'),
+    'secondaryLabel' => 'Voltar ao site',
+])
 @endsection
 
 @push('scripts')
