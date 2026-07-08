@@ -19,6 +19,7 @@ return [
         'phone_display' => env('LANDING_PHONE_DISPLAY'),
         'email' => env('LANDING_EMAIL'),
         'address' => env('LANDING_ADDRESS'),
+        'hours' => env('LANDING_HOURS', 'Segunda a Sábado: 8h às 21h'),
     ],
 
     'social' => [

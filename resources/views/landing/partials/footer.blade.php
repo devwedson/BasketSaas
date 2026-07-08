@@ -44,9 +44,15 @@
                                     </li>
                                 @endif
                                 @if ($contactAddress)
-                                    <li>{{ $contactAddress }}</li>
+                                    <li>
+                                        <img src="{{ neodunk_asset('images/icon-location-white.svg') }}" alt="">
+                                        {{ $contactAddress }}
+                                    </li>
                                 @elseif ($club?->city)
-                                    <li>{{ $club->city }}/{{ $club->state }} — {{ $club->country }}</li>
+                                    <li>
+                                        <img src="{{ neodunk_asset('images/icon-location-white.svg') }}" alt="">
+                                        {{ $club->city }}/{{ $club->state }} — {{ $club->country }}
+                                    </li>
                                 @endif
                             </ul>
                         </div>

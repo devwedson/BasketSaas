@@ -18,58 +18,8 @@
 
                     <div class="contact-us-image">
                         <figure class="image-anime reveal">
-                            <img src="{{ club_contact_image_url($club) }}" alt="Contato">
+                            <img src="{{ club_contact_image_url($club) }}" alt="Contato {{ $club?->name ?? config('landing.brand.name') }}">
                         </figure>
-                    </div>
-
-                    <div class="about-body-item-list wow fadeInUp" data-wow-delay="0.3s">
-                        @if ($club?->phone ?? config('landing.contact.phone'))
-                            <div class="about-body-item">
-                                <div class="icon-box">
-                                    <img src="{{ neodunk_asset('images/icon-phone-accent-secondary.svg') }}" alt="">
-                                </div>
-                                <div class="about-body-item-content">
-                                    <h3>Telefone</h3>
-                                    <p>
-                                        <a href="tel:{{ preg_replace('/\D/', '', $club?->phone ?? config('landing.contact.phone')) }}">
-                                            {{ $club?->phone ?? config('landing.contact.phone_display', config('landing.contact.phone')) }}
-                                        </a>
-                                    </p>
-                                </div>
-                            </div>
-                        @endif
-                        @if ($club?->email ?? config('landing.contact.email'))
-                            <div class="about-body-item">
-                                <div class="icon-box">
-                                    <img src="{{ neodunk_asset('images/icon-mail-accent-secondary.svg') }}" alt="">
-                                </div>
-                                <div class="about-body-item-content">
-                                    <h3>E-mail</h3>
-                                    <p>
-                                        <a href="mailto:{{ $club?->email ?? config('landing.contact.email') }}">
-                                            {{ $club?->email ?? config('landing.contact.email') }}
-                                        </a>
-                                    </p>
-                                </div>
-                            </div>
-                        @endif
-                        @if ($club?->address ?? $club?->city ?? config('landing.contact.address'))
-                            <div class="about-body-item">
-                                <div class="icon-box">
-                                    <img src="{{ neodunk_asset('images/icon-location-white.svg') }}" alt="">
-                                </div>
-                                <div class="about-body-item-content">
-                                    <h3>Endereço</h3>
-                                    <p>
-                                        @if ($club?->address ?? config('landing.contact.address'))
-                                            {{ $club?->address ?? config('landing.contact.address') }}
-                                        @else
-                                            {{ $club->city }}/{{ $club->state }} — {{ $club->country }}
-                                        @endif
-                                    </p>
-                                </div>
-                            </div>
-                        @endif
                     </div>
                 </div>
             </div>
@@ -82,26 +32,36 @@
                     </div>
 
                     <div class="contact-form">
-                        <form action="mailto:{{ $club?->email ?? config('landing.contact.email', 'contato@basketsaas.com') }}" method="post" enctype="text/plain" data-toggle="validator" class="wow fadeInUp" data-wow-delay="0.4s">
+                        <form id="contactForm" action="mailto:{{ $club?->email ?? config('landing.contact.email', 'contato@basketsaas.com') }}" method="post" enctype="text/plain" data-toggle="validator" class="wow fadeInUp" data-wow-delay="0.4s">
                             <div class="row">
                                 <div class="form-group col-md-6 mb-4">
-                                    <label>Nome:</label>
-                                    <input type="text" name="nome" class="form-control" placeholder="Seu nome *" required>
+                                    <label for="fname">Nome:</label>
+                                    <input type="text" name="fname" class="form-control" id="fname" placeholder="Seu nome *" required>
+                                    <div class="help-block with-errors"></div>
                                 </div>
                                 <div class="form-group col-md-6 mb-4">
-                                    <label>Telefone:</label>
-                                    <input type="text" name="telefone" class="form-control" placeholder="Seu telefone">
+                                    <label for="lname">Sobrenome:</label>
+                                    <input type="text" name="lname" class="form-control" id="lname" placeholder="Seu sobrenome *" required>
+                                    <div class="help-block with-errors"></div>
                                 </div>
-                                <div class="form-group col-md-12 mb-4">
-                                    <label>E-mail:</label>
-                                    <input type="email" name="email" class="form-control" placeholder="Seu e-mail *" required>
+                                <div class="form-group col-md-6 mb-4">
+                                    <label for="email">E-mail:</label>
+                                    <input type="email" name="email" class="form-control" id="email" placeholder="Seu e-mail *" required>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                                <div class="form-group col-md-6 mb-4">
+                                    <label for="phone">Telefone:</label>
+                                    <input type="text" name="phone" class="form-control" id="phone" placeholder="Seu telefone">
+                                    <div class="help-block with-errors"></div>
                                 </div>
                                 <div class="form-group col-md-12 mb-5">
-                                    <label>Mensagem:</label>
-                                    <textarea name="mensagem" class="form-control" rows="5" placeholder="Sua mensagem..." required></textarea>
+                                    <label for="message">Mensagem:</label>
+                                    <textarea name="message" class="form-control" id="message" rows="5" placeholder="Sua mensagem..." required></textarea>
+                                    <div class="help-block with-errors"></div>
                                 </div>
                                 <div class="col-md-12">
                                     <button type="submit" class="btn-default">Enviar Mensagem</button>
+                                    <div id="msgSubmit" class="h3 hidden"></div>
                                 </div>
                             </div>
                         </form>
@@ -111,4 +71,78 @@
         </div>
     </div>
 </div>
+
+@php
+    $mapQuery = urlencode(trim(($club?->address ?? config('landing.contact.address', '')).' '.($club?->city ?? '').' '.($club?->state ?? '').' '.($club?->country ?? 'Brasil')));
+@endphp
+
+<div class="google-map">
+    <div class="container">
+        <div class="row section-row">
+            <div class="col-lg-12">
+                <div class="section-title section-title-center">
+                    <span class="section-sub-title wow fadeInUp">Nossa Localização</span>
+                    <h2 class="text-anime-style-3" data-cursor="-opaque">Onde o treino encontra a oportunidade</h2>
+                    <p class="wow fadeInUp" data-wow-delay="0.2s">Visite nossa estrutura, conheça a equipe técnica e descubra o programa ideal para você ou seu atleta.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                @include('landing.partials.contact-info-items', ['club' => $club])
+            </div>
+        </div>
+
+        @if ($mapQuery)
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="google-map-iframe wow fadeInUp" data-wow-delay="0.4s">
+                        <iframe
+                            src="https://maps.google.com/maps?q={{ $mapQuery }}&amp;hl=pt&amp;z=15&amp;output=embed"
+                            allowfullscreen=""
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                            title="Mapa — {{ $club?->name ?? config('landing.brand.name') }}"
+                        ></iframe>
+                    </div>
+                </div>
+            </div>
+        @endif
+    </div>
+</div>
 @endsection
+
+@push('styles')
+<style>
+    .google-map .about-body-item-list {
+        margin-bottom: 40px;
+    }
+
+    .contact-info-item {
+        width: calc(33.333% - 20px);
+        min-width: 220px;
+        flex: 1 1 220px;
+    }
+
+    .about-body-item-list .icon-box-light {
+        background: var(--bg-color, #f5f0eb);
+    }
+
+    .about-body-item-list .icon-box-light img {
+        max-width: 22px;
+    }
+
+    @media (max-width: 991px) {
+        .contact-info-item {
+            width: calc(50% - 15px);
+        }
+    }
+
+    @media (max-width: 575px) {
+        .contact-info-item {
+            width: 100%;
+        }
+    }
+</style>
+@endpush
