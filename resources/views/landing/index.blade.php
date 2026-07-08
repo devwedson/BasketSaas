@@ -233,7 +233,6 @@
     </div>
 </div>
 
-@if ($sponsors->isNotEmpty())
 <div class="cta-box bg-section dark-section parallaxie">
     <div class="container">
         <div class="row">
@@ -253,10 +252,25 @@
                     </div>
                 </div>
 
-                @include('landing.partials.sponsors-slider', ['sponsors' => $sponsors])
+                @if ($sponsors->isNotEmpty())
+                    @include('landing.partials.sponsors-slider', ['sponsors' => $sponsors])
+                @endif
             </div>
         </div>
     </div>
 </div>
-@endif
+
+@include('landing.partials.home-testimonials', [
+    'club' => $club,
+    'featuredPlayers' => $featuredPlayers,
+])
+
+@include('landing.partials.home-faqs', [
+    'featuredPlayers' => $featuredPlayers,
+])
+
+@include('landing.partials.home-blog', [
+    'trainings' => $trainings,
+    'recentGames' => $recentGames,
+])
 @endsection

@@ -36,6 +36,18 @@ return [
         'header_route' => env('LANDING_CTA_HEADER_ROUTE', 'login'),
     ],
 
+    'testimonials' => [
+        [
+            'quote' => 'Treinar neste clube elevou completamente meu jogo. A comissão técnica foca em fundamentos, estratégia e força mental — isso me deixou muito mais confiante em quadra.',
+        ],
+        [
+            'quote' => 'Adoro fazer parte deste clube. Cada sessão é desafiadora e bem organizada. Os treinadores explicam tudo com clareza e sempre nos incentivam a evoluir.',
+        ],
+        [
+            'quote' => 'A estrutura do clube une treino de qualidade, espírito de equipe e oportunidades reais de competição. Foi o melhor passo da minha carreira no basquete.',
+        ],
+    ],
+
     'faqs' => [
         [
             'category' => 'Perguntas Gerais',
