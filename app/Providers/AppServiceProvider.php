@@ -6,6 +6,7 @@ use App\Services\LandingDataService;
 use App\Services\LandingSettingsService;
 use App\Services\PaymentSettingsService;
 use App\Services\SmtpSettingsService;
+use App\Services\UploadStorageService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -28,16 +29,18 @@ class AppServiceProvider extends ServiceProvider
     {
         Carbon::setLocale(config('app.locale', 'pt_BR'));
 
-        $uploadRoot = public_path('storage');
-        if (! is_dir($uploadRoot)) {
-            mkdir($uploadRoot, 0755, true);
-        }
-
         try {
+            $uploads = app(UploadStorageService::class);
+            $uploads->ensureUploadRoot();
+
             if (Schema::hasTable('settings')) {
                 app(SmtpSettingsService::class)->applyToConfig();
                 app(LandingSettingsService::class)->applyToConfig();
                 app(PaymentSettingsService::class)->applyToConfig();
+
+                if ($uploads->shouldPublishLegacyUploads()) {
+                    $uploads->publishLegacyUploads();
+                }
             }
         } catch (\Throwable) {
             // Ignora falha de conexão durante migrate, cache:clear, etc.

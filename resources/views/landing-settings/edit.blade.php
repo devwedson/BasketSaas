@@ -62,6 +62,8 @@
     </div>
 @include('partials.attex.form-card-close', ['cancelUrl' => route('dashboard'), 'cancelLabel' => 'Voltar', 'submitLabel' => 'Salvar Landing'])
 
+@include('landing-settings.partials.hosting-maintenance')
+
 @push('scripts')
 <script>
 document.querySelectorAll('.landing-tab-btn').forEach(function (btn) {

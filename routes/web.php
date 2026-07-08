@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\PublicStorageController;
 use App\Http\Controllers\SmtpSettingsController;
+use App\Http\Controllers\SystemMaintenanceController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\ClubSettingsController;
@@ -82,6 +83,8 @@ Route::middleware('auth')->group(function () {
             Route::put('/configuracoes/landing', [LandingSettingsController::class, 'update'])->name('landing.settings.update');
             Route::get('/configuracoes/pagamentos', [PaymentSettingsController::class, 'edit'])->name('payment.settings.edit');
             Route::put('/configuracoes/pagamentos', [PaymentSettingsController::class, 'update'])->name('payment.settings.update');
+            Route::post('/configuracoes/manutencao/uploads', [SystemMaintenanceController::class, 'repairUploads'])
+                ->name('system.maintenance.uploads');
         });
 
         Route::middleware('role:club')->group(function () {

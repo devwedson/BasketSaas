@@ -2,6 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Enums\UserRole;
+use App\Models\Setting;
+use App\Models\User;
+use App\Services\UploadStorageService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -41,5 +45,34 @@ class MediaUploadTest extends TestCase
             ->assertOk();
 
         @unlink($legacyFile);
+    }
+
+    public function test_upload_service_publishes_legacy_files(): void
+    {
+        $legacyDir = storage_path('app/public/clubs/logos');
+        mkdir($legacyDir, 0755, true);
+        file_put_contents($legacyDir.'/legacy.png', 'legacy-logo');
+
+        $copied = app(UploadStorageService::class)->publishLegacyUploads();
+
+        $this->assertSame(1, $copied);
+        $this->assertFileExists(public_path('storage/clubs/logos/legacy.png'));
+        $this->assertSame('1', Setting::query()->where('key', UploadStorageService::LEGACY_PUBLISHED_KEY)->value('value'));
+
+        @unlink(public_path('storage/clubs/logos/legacy.png'));
+        @unlink($legacyDir.'/legacy.png');
+    }
+
+    public function test_super_admin_can_repair_uploads_from_panel(): void
+    {
+        $admin = User::factory()->create([
+            'role' => UserRole::SuperAdmin,
+            'email_verified_at' => now(),
+        ]);
+
+        $this->actingAs($admin)
+            ->post(route('system.maintenance.uploads'))
+            ->assertRedirect()
+            ->assertSessionHas('success');
     }
 }
