@@ -37,6 +37,17 @@ if (! function_exists('landing_route')) {
     }
 }
 
+if (! function_exists('mail_sender_name')) {
+    function mail_sender_name(): string
+    {
+        try {
+            return app(\App\Services\SmtpSettingsService::class)->senderName();
+        } catch (\Throwable) {
+            return (string) (config('landing.brand.name') ?: config('mail.from.name') ?: config('app.name'));
+        }
+    }
+}
+
 if (! function_exists('parse_brazilian_money')) {
     function parse_brazilian_money(mixed $value): float
     {

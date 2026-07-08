@@ -31,7 +31,7 @@ class EmailPreviewService
 
     public function verifyAccountSubject(): string
     {
-        return 'Ative sua conta — '.config('app.name');
+        return 'Ative sua conta — '.mail_sender_name();
     }
 
     public function renderVerifyAccountEmail(?User $user = null): string

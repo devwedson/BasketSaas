@@ -64,7 +64,8 @@
 
                 <div class="md:col-span-2">
                     <label class="font-semibold text-gray-500 dark:text-gray-400 mb-2 block">Nome remetente</label>
-                    <input type="text" name="from_name" class="form-input" value="{{ old('from_name', $settings['from_name']) }}" placeholder="{{ config('app.name') }}">
+                    <input type="text" name="from_name" class="form-input" value="{{ old('from_name', $settings['from_name']) }}" placeholder="{{ mail_sender_name() }}">
+                    <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Nome exibido como remetente e no corpo dos e-mails (ativação, testes).</p>
                 </div>
             </div>
         @include('partials.attex.form-card-close', ['cancelUrl' => route('dashboard'), 'cancelLabel' => 'Voltar', 'submitLabel' => 'Salvar SMTP'])

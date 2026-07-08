@@ -45,6 +45,17 @@ class SmtpSettingsService
             && $settings['from_address'] !== '';
     }
 
+    public function senderName(): string
+    {
+        $settings = $this->all();
+
+        if (filled($settings['from_name'])) {
+            return $settings['from_name'];
+        }
+
+        return (string) (config('landing.brand.name') ?: config('mail.from.name') ?: config('app.name'));
+    }
+
     public function save(array $data): void
     {
         $this->put('smtp.enabled', ! empty($data['enabled']) ? '1' : '0');

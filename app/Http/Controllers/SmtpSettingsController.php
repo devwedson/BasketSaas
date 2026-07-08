@@ -19,7 +19,7 @@ class SmtpSettingsController extends Controller
             'settings' => $settings,
             'previewSubject' => $preview->verifyAccountSubject(),
             'previewFromAddress' => $settings['from_address'] ?: config('mail.from.address'),
-            'previewFromName' => $settings['from_name'] ?: config('mail.from.name'),
+            'previewFromName' => $smtp->senderName(),
             'previewSampleEmail' => $preview->sampleUser()->email,
         ]);
     }
@@ -60,13 +60,15 @@ class SmtpSettingsController extends Controller
         }
 
         try {
+            $senderName = $smtp->senderName();
+
             Mail::raw(
-                'Este é um e-mail de teste do '.config('app.name').".\n\nSe você recebeu esta mensagem, o SMTP está configurado corretamente.",
-                function ($message) use ($data, $smtp) {
+                'Este é um e-mail de teste do '.$senderName.".\n\nSe você recebeu esta mensagem, o SMTP está configurado corretamente.",
+                function ($message) use ($data, $smtp, $senderName) {
                     $settings = $smtp->all();
                     $message->to($data['test_email'])
-                        ->subject('Teste SMTP — '.config('app.name'))
-                        ->from($settings['from_address'], $settings['from_name']);
+                        ->subject('Teste SMTP — '.$senderName)
+                        ->from($settings['from_address'], $senderName);
                 }
             );
         } catch (\Throwable $e) {
