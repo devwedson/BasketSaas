@@ -152,11 +152,11 @@ class GameController extends Controller
 
         if ($attachFiles) {
             if ($request->hasFile('opponent_logo')) {
-                $payload['opponent_logo'] = $request->file('opponent_logo')->store('games/opponent-logos', 'public');
+                $payload['opponent_logo'] = store_panel_upload($request->file('opponent_logo'), 'games/opponent-logos');
             }
 
             if ($request->hasFile('cover_image')) {
-                $payload['cover_image'] = $request->file('cover_image')->store('games/covers', 'public');
+                $payload['cover_image'] = store_panel_upload($request->file('cover_image'), 'games/covers');
             }
         }
 

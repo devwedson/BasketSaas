@@ -39,7 +39,7 @@ class PlayerController extends Controller
         $data = $this->validatedData($request);
 
         if ($request->hasFile('photo')) {
-            $data['photo'] = $request->file('photo')->store('players/photos', 'public');
+            $data['photo'] = store_panel_upload($request->file('photo'), 'players/photos');
         }
 
         Player::create($data);
@@ -74,7 +74,7 @@ class PlayerController extends Controller
         $data = $this->validatedData($request, $player);
 
         if ($request->hasFile('photo')) {
-            $data['photo'] = $request->file('photo')->store('players/photos', 'public');
+            $data['photo'] = store_panel_upload($request->file('photo'), 'players/photos');
         }
 
         $player->update($data);

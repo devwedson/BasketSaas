@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Setting;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
@@ -10,13 +11,42 @@ class UploadStorageService
 {
     public const LEGACY_PUBLISHED_KEY = 'storage.legacy_published';
 
+    public function storeUpload(UploadedFile $file, string $directory): string
+    {
+        $this->ensureUploadRoot();
+
+        return $file->store($directory, 'public');
+    }
+
     public function ensureUploadRoot(): void
     {
         $uploadRoot = public_path('storage');
 
+        if ($this->usesStorageJunction($uploadRoot)) {
+            $this->removeStorageJunction($uploadRoot);
+        }
+
         if (! is_dir($uploadRoot)) {
             mkdir($uploadRoot, 0755, true);
         }
+    }
+
+    public function usesStorageJunction(?string $uploadRoot = null): bool
+    {
+        $uploadRoot ??= public_path('storage');
+
+        if (! file_exists($uploadRoot)) {
+            return false;
+        }
+
+        if (is_link($uploadRoot)) {
+            return true;
+        }
+
+        $realUpload = realpath($uploadRoot);
+        $realLegacy = realpath(storage_path('app/public'));
+
+        return $realUpload && $realLegacy && $realUpload === $realLegacy;
     }
 
     public function publishLegacyUploads(bool $force = false): int
@@ -40,7 +70,7 @@ class UploadStorageService
         foreach (File::allFiles($legacyRoot) as $file) {
             $relativePath = str_replace('\\', '/', substr($file->getPathname(), strlen($legacyRoot) + 1));
 
-            if ($relativePath === '.gitignore' || $this->absolutePathFor($relativePath, preferPublic: true) !== null) {
+            if ($relativePath === '.gitignore' || is_file(public_path('storage'.DIRECTORY_SEPARATOR.$relativePath))) {
                 continue;
             }
 
@@ -64,6 +94,10 @@ class UploadStorageService
 
     public function hasUnpublishedLegacyFiles(): bool
     {
+        if ($this->usesStorageJunction()) {
+            return $this->legacyUploadsAvailable();
+        }
+
         $legacyRoot = storage_path('app/public');
 
         if (! is_dir($legacyRoot)) {
@@ -138,7 +172,19 @@ class UploadStorageService
     {
         $this->ensureUploadRoot();
 
-        return is_writable(public_path('storage'));
+        return is_writable(public_path('storage')) && ! $this->usesStorageJunction();
+    }
+
+    private function removeStorageJunction(string $path): void
+    {
+        if (is_link($path)) {
+            unlink($path);
+
+            return;
+        }
+
+        // Junction no Windows: remove só o atalho, mantém storage/app/public intacto.
+        @rmdir($path);
     }
 
     private function markLegacyPublished(): void

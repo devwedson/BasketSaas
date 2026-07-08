@@ -54,11 +54,11 @@ class TeamController extends Controller
         ];
 
         if ($request->hasFile('logo')) {
-            $payload['logo'] = $request->file('logo')->store('teams/logos', 'public');
+            $payload['logo'] = store_panel_upload($request->file('logo'), 'teams/logos');
         }
 
         if ($request->hasFile('cover_image')) {
-            $payload['cover_image'] = $request->file('cover_image')->store('teams/covers', 'public');
+            $payload['cover_image'] = store_panel_upload($request->file('cover_image'), 'teams/covers');
         }
 
         Team::create($payload);
@@ -110,11 +110,11 @@ class TeamController extends Controller
         ];
 
         if ($request->hasFile('logo')) {
-            $payload['logo'] = $request->file('logo')->store('teams/logos', 'public');
+            $payload['logo'] = store_panel_upload($request->file('logo'), 'teams/logos');
         }
 
         if ($request->hasFile('cover_image')) {
-            $payload['cover_image'] = $request->file('cover_image')->store('teams/covers', 'public');
+            $payload['cover_image'] = store_panel_upload($request->file('cover_image'), 'teams/covers');
         }
 
         $team->update($payload);

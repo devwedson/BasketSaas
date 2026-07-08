@@ -78,16 +78,16 @@ class LandingSettingsController extends Controller
         $data = $request->validate($rules);
 
         if ($request->hasFile('brand_logo')) {
-            $data['brand_logo_path'] = $request->file('brand_logo')->store('landing/brand', 'public');
+            $data['brand_logo_path'] = store_panel_upload($request->file('brand_logo'), 'landing/brand');
         }
 
         if ($request->hasFile('brand_favicon')) {
-            $data['brand_favicon_path'] = $request->file('brand_favicon')->store('landing/brand', 'public');
+            $data['brand_favicon_path'] = store_panel_upload($request->file('brand_favicon'), 'landing/brand');
         }
 
         foreach (array_keys(LandingSettingsService::IMAGE_KEYS) as $imageKey) {
             if ($request->hasFile("image_{$imageKey}")) {
-                $data["image_{$imageKey}_path"] = $request->file("image_{$imageKey}")->store('landing/images', 'public');
+                $data["image_{$imageKey}_path"] = store_panel_upload($request->file("image_{$imageKey}"), 'landing/images');
             }
         }
 

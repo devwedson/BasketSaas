@@ -33,15 +33,15 @@ class ClubSettingsController extends Controller
         ]);
 
         if ($request->hasFile('logo')) {
-            $data['logo'] = $request->file('logo')->store('clubs/logos', 'public');
+            $data['logo'] = store_panel_upload($request->file('logo'), 'clubs/logos');
         }
 
         if ($request->hasFile('cover_image')) {
-            $data['cover_image'] = $request->file('cover_image')->store('clubs/covers', 'public');
+            $data['cover_image'] = store_panel_upload($request->file('cover_image'), 'clubs/covers');
         }
 
         if ($request->hasFile('contact_image')) {
-            $data['contact_image'] = $request->file('contact_image')->store('clubs/contact', 'public');
+            $data['contact_image'] = store_panel_upload($request->file('contact_image'), 'clubs/contact');
         }
 
         $club->update($data);

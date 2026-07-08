@@ -46,7 +46,7 @@ class StaffController extends Controller
         $data = $this->validatedData($request);
 
         if ($request->hasFile('photo')) {
-            $data['photo'] = $request->file('photo')->store('staff/photos', 'public');
+            $data['photo'] = store_panel_upload($request->file('photo'), 'staff/photos');
         }
 
         $staff = Staff::create($data);
@@ -89,7 +89,7 @@ class StaffController extends Controller
         $data = $this->validatedData($request, $staff);
 
         if ($request->hasFile('photo')) {
-            $data['photo'] = $request->file('photo')->store('staff/photos', 'public');
+            $data['photo'] = store_panel_upload($request->file('photo'), 'staff/photos');
         }
 
         $staff->update($data);

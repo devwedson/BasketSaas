@@ -57,6 +57,28 @@ class MediaUploadTest extends TestCase
         @unlink($legacyFile);
     }
 
+    public function test_upload_service_removes_storage_junction_before_publishing(): void
+    {
+        $legacyDir = storage_path('app/public/landing/brand');
+        mkdir($legacyDir, 0755, true);
+        file_put_contents($legacyDir.'/logo.png', 'logo');
+
+        $uploads = app(UploadStorageService::class);
+
+        if ($uploads->usesStorageJunction()) {
+            $uploads->ensureUploadRoot();
+            $this->assertFalse($uploads->usesStorageJunction());
+        }
+
+        $copied = $uploads->publishLegacyUploads(force: true);
+
+        $this->assertGreaterThanOrEqual(1, $copied);
+        $this->assertFileExists(public_path('storage/landing/brand/logo.png'));
+
+        @unlink(public_path('storage/landing/brand/logo.png'));
+        @unlink($legacyDir.'/logo.png');
+    }
+
     public function test_upload_service_publishes_legacy_files(): void
     {
         $legacyDir = storage_path('app/public/clubs/logos');

@@ -38,7 +38,7 @@ class SponsorController extends Controller
         $data = $this->validatedData($request);
 
         if ($request->hasFile('logo')) {
-            $data['logo'] = $request->file('logo')->store('sponsors/logos', 'public');
+            $data['logo'] = store_panel_upload($request->file('logo'), 'sponsors/logos');
         }
 
         $sponsor = Sponsor::create($data);
@@ -74,7 +74,7 @@ class SponsorController extends Controller
         $data = $this->validatedData($request, $sponsor);
 
         if ($request->hasFile('logo')) {
-            $data['logo'] = $request->file('logo')->store('sponsors/logos', 'public');
+            $data['logo'] = store_panel_upload($request->file('logo'), 'sponsors/logos');
         }
 
         $sponsor->update($data);

@@ -2,7 +2,8 @@
     <div class="card-header border-b border-gray-100 dark:border-gray-700">
         <h4 class="card-title text-base">Hospedagem (sem terminal)</h4>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Se logos ou imagens enviadas não aparecem no site, use o botão abaixo. Não é necessário rodar comandos no servidor.
+            Se logos ou imagens enviadas não aparecem no site, use o botão abaixo. Isso remove o atalho
+            <code class="text-xs">public/storage</code> do Laravel (se existir), copia arquivos antigos e corrige as URLs.
         </p>
     </div>
     <div class="p-6 flex flex-wrap items-center gap-3">

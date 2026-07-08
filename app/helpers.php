@@ -37,6 +37,13 @@ if (! function_exists('landing_route')) {
     }
 }
 
+if (! function_exists('store_panel_upload')) {
+    function store_panel_upload(\Illuminate\Http\UploadedFile $file, string $directory): string
+    {
+        return app(\App\Services\UploadStorageService::class)->storeUpload($file, $directory);
+    }
+}
+
 if (! function_exists('normalize_upload_path')) {
     function normalize_upload_path(?string $path): string
     {
