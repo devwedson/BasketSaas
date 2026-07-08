@@ -15,61 +15,38 @@
     'actionIcon' => 'ri-add-line',
 ])
 
-<div class="card">
-    <div class="card-header flex justify-between items-center">
-        <h4 class="card-title">Lista de Times</h4>
-        <span class="text-sm text-gray-500 dark:text-gray-400">{{ $teams->total() }} registro(s)</span>
-    </div>
-    <div class="p-6">
-        <div class="overflow-x-auto">
-            <div class="min-w-full inline-block align-middle">
-                <div class="overflow-hidden">
-                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Time</th>
-                                <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Categoria</th>
-                                <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Temporada</th>
-                                @if (auth()->user()->isSuperAdmin())
-                                    <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Clube</th>
-                                @endif
-                                <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Status</th>
-                                <th scope="col" class="px-4 py-4 text-end text-sm font-medium text-gray-500 dark:text-gray-400">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                            @forelse ($teams as $team)
-                                <tr>
-                                    <td class="px-4 py-4 whitespace-nowrap">
-                                        <div class="flex items-center gap-3">
-                                            <img src="{{ team_logo_url($team, 'images/team-logo-1.png') }}" alt="{{ $team->name }}" class="h-10 w-10 object-contain rounded border border-gray-100 dark:border-gray-700 p-0.5">
-                                            <span class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ $team->name }}</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 dark:text-gray-300">{{ $team->category ?? '-' }}</td>
-                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 dark:text-gray-300">{{ $team->season?->name ?? '-' }}</td>
-                                    @if (auth()->user()->isSuperAdmin())
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 dark:text-gray-300">{{ $team->club->name }}</td>
-                                    @endif
-                                    <td class="px-4 py-4 whitespace-nowrap">@include('partials.attex.status-badge', ['active' => $team->is_active])</td>
-                                    <td class="px-4 py-4 whitespace-nowrap text-end">
-                                        @include('partials.attex.row-actions', [
-                                            'showUrl' => route('teams.show', $team),
-                                            'editUrl' => route('teams.edit', $team),
-                                            'deleteUrl' => route('teams.destroy', $team),
-                                        ])
-                                    </td>
-                                </tr>
-                            @empty
-                                @include('partials.attex.empty-row', ['colspan' => auth()->user()->isSuperAdmin() ? 6 : 5, 'message' => 'Nenhum time cadastrado.'])
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+@php
+    $gridColumns = [
+        ['name' => 'Time', 'html' => true],
+        ['name' => 'Categoria'],
+        ['name' => 'Temporada'],
+    ];
+    if (auth()->user()->isSuperAdmin()) {
+        $gridColumns[] = ['name' => 'Clube'];
+    }
+    $gridColumns[] = ['name' => 'Status', 'html' => true];
+    $gridColumns[] = ['name' => 'Ações', 'html' => true, 'sort' => false, 'width' => '150px'];
 
-@include('partials.attex.pagination', ['paginator' => $teams])
+    $gridRows = $teams->map(function ($team) {
+        $row = [
+            '<div class="flex items-center gap-3"><img src="'.e(team_logo_url($team, 'images/team-logo-1.png')).'" class="h-10 w-10 object-contain rounded border border-gray-100 dark:border-gray-700 p-0.5" alt=""><span class="font-medium text-slate-800 dark:text-slate-200">'.e($team->name).'</span></div>',
+            e($team->category ?? '-'),
+            e($team->season?->name ?? '-'),
+        ];
+        if (auth()->user()->isSuperAdmin()) {
+            $row[] = e($team->club->name);
+        }
+        $row[] = attex_status_badge_html($team->is_active);
+        $row[] = attex_row_actions_html(route('teams.show', $team), route('teams.edit', $team), route('teams.destroy', $team));
+
+        return $row;
+    })->values()->all();
+@endphp
+
+@include('partials.attex.data-table', [
+    'title' => 'Lista de Times',
+    'count' => $teams->count(),
+    'columns' => $gridColumns,
+    'rows' => $gridRows,
+])
 @endsection

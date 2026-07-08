@@ -16,44 +16,42 @@
     <div class="card mb-6">
         <div class="card-header flex justify-between items-center">
             <h4 class="card-title">{{ \Carbon\Carbon::parse($date)->translatedFormat('l, d/m/Y') }}</h4>
-            <span class="text-sm text-gray-500 dark:text-gray-400">{{ count($dayEvents) }} evento(s)</span>
+            <span class="text-sm text-slate-500 dark:text-slate-400">{{ count($dayEvents) }} evento(s)</span>
         </div>
-        <div class="p-0">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead>
+        <div class="relative overflow-x-auto">
+            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead class="bg-light/40 border-b border-gray-100 dark:bg-light/5 dark:border-b-gray-700">
+                    <tr>
+                        <th class="py-1.5 px-4 w-28">Horário</th>
+                        <th class="py-1.5 px-4 w-28">Tipo</th>
+                        <th class="py-1.5 px-4">Evento</th>
+                        <th class="py-1.5 px-4">Time</th>
+                        <th class="py-1.5 px-4">Local</th>
+                        <th class="py-1.5 px-4 text-end w-20">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($dayEvents as $event)
                         <tr>
-                            <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400 w-28">Horário</th>
-                            <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400 w-28">Tipo</th>
-                            <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Evento</th>
-                            <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Time</th>
-                            <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Local</th>
-                            <th scope="col" class="px-4 py-4 text-end text-sm font-medium text-gray-500 dark:text-gray-400 w-20">Ações</th>
+                            <td class="p-4 font-medium text-gray-800 dark:text-gray-200">{{ $event['datetime']->format('H:i') }}</td>
+                            <td class="p-4">
+                                <span class="inline-flex items-center gap-1.5 py-1 px-2 rounded-md text-xs font-medium {{ $event['type'] === 'training' ? 'bg-primary/10 text-primary' : 'bg-warning/10 text-warning' }}">
+                                    <i class="{{ $event['type'] === 'training' ? 'ri-basketball-line' : 'ri-trophy-line' }}"></i>
+                                    {{ $event['type'] === 'training' ? 'Treino' : 'Jogo' }}
+                                </span>
+                            </td>
+                            <td class="p-4 text-gray-800 dark:text-gray-200">{{ $event['title'] }}</td>
+                            <td class="p-4">{{ $event['team'] ?? 'Geral' }}</td>
+                            <td class="p-4">{{ $event['location'] ?? 'A definir' }}</td>
+                            <td class="p-4 text-end">
+                                <a href="{{ $event['url'] }}" class="btn btn-sm bg-light text-dark dark:bg-gray-700 dark:text-gray-200" title="Ver">
+                                    <i class="ri-eye-line"></i>
+                                </a>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                        @foreach ($dayEvents as $event)
-                            <tr>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ $event['datetime']->format('H:i') }}</td>
-                                <td class="px-4 py-4 whitespace-nowrap">
-                                    <span class="inline-flex items-center gap-1.5 py-1 px-2 rounded-md text-xs font-medium {{ $event['type'] === 'training' ? 'bg-primary/10 text-primary' : 'bg-warning/10 text-warning' }}">
-                                        <i class="{{ $event['type'] === 'training' ? 'ri-basketball-line' : 'ri-trophy-line' }}"></i>
-                                        {{ $event['type'] === 'training' ? 'Treino' : 'Jogo' }}
-                                    </span>
-                                </td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">{{ $event['title'] }}</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $event['team'] ?? 'Geral' }}</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $event['location'] ?? 'A definir' }}</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-end">
-                                    <a href="{{ $event['url'] }}" class="btn btn-sm bg-light text-dark dark:bg-gray-700 dark:text-gray-200" title="Ver">
-                                        <i class="ri-eye-line"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
 @empty

@@ -18,7 +18,7 @@ class TeamController extends Controller
         $teams = $this->scopeByClub(
             Team::query()->with(['club', 'season'])->latest(),
             $request
-        )->paginate(10);
+        )->get();
 
         return view('teams.index', compact('teams'));
     }

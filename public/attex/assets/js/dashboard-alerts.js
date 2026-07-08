@@ -50,28 +50,32 @@
     }
 
     function bindDeleteConfirmations() {
-        document.querySelectorAll('form.js-confirm-delete').forEach(function (form) {
-            form.addEventListener('submit', function (event) {
-                event.preventDefault();
+        document.addEventListener('submit', function (event) {
+            var form = event.target.closest('form.js-confirm-delete');
 
-                Swal.fire({
-                    title: form.dataset.confirmTitle || 'Excluir registro?',
-                    text: form.dataset.confirmMessage || 'Esta ação não pode ser desfeita. Deseja continuar?',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#ef4444',
-                    cancelButtonColor: '#6b7280',
-                    confirmButtonText: 'Sim, excluir',
-                    cancelButtonText: 'Cancelar',
-                    reverseButtons: true,
-                    focusCancel: true,
-                }).then(function (result) {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
-                });
+            if (!form) {
+                return;
+            }
+
+            event.preventDefault();
+
+            Swal.fire({
+                title: form.dataset.confirmTitle || 'Excluir registro?',
+                text: form.dataset.confirmMessage || 'Esta ação não pode ser desfeita. Deseja continuar?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Sim, excluir',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+                focusCancel: true,
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    HTMLFormElement.prototype.submit.call(form);
+                }
             });
-        });
+        }, true);
     }
 
     document.addEventListener('DOMContentLoaded', function () {

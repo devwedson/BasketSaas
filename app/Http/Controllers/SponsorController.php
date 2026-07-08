@@ -20,7 +20,7 @@ class SponsorController extends Controller
         $sponsors = $this->scopeByClub(
             Sponsor::query()->with('club')->orderBy('sort_order')->orderBy('name'),
             $request
-        )->paginate(10);
+        )->get();
 
         return view('sponsors.index', compact('sponsors'));
     }

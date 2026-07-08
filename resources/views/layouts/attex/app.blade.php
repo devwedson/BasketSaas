@@ -7,6 +7,7 @@
     <link rel="shortcut icon" href="{{ attex_asset(config('attex.brand.favicon')) }}">
     <link href="{{ attex_asset('assets/css/app.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ attex_asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ attex_asset('assets/libs/gridjs/theme/mermaid.min.css') }}" rel="stylesheet" type="text/css">
     <script src="{{ attex_asset('assets/js/config.js') }}"></script>
     @stack('styles')
 </head>
@@ -27,6 +28,8 @@
     <script src="{{ attex_asset('assets/libs/lucide/umd/lucide.min.js') }}"></script>
     <script src="{{ attex_asset('assets/libs/@frostui/tailwindcss/frostui.js') }}"></script>
     <script src="{{ attex_asset('assets/js/app.js') }}"></script>
+    <script src="{{ attex_asset('assets/libs/gridjs/gridjs.umd.js') }}"></script>
+    <script src="{{ attex_asset('assets/js/attex-grid.js') }}"></script>
     @include('partials.attex.sweetalert')
     @stack('scripts')
 </body>

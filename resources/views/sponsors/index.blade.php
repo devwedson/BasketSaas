@@ -15,73 +15,45 @@
     'actionIcon' => 'ri-add-line',
 ])
 
-<div class="card">
-    <div class="card-header flex justify-between items-center">
-        <h4 class="card-title">Lista de Patrocinadores</h4>
-        <span class="text-sm text-gray-500 dark:text-gray-400">{{ $sponsors->total() }} registro(s)</span>
-    </div>
-    <div class="p-6">
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead>
-                    <tr>
-                        <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Patrocinador</th>
-                        <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Nível</th>
-                        @if (auth()->user()->isSuperAdmin())
-                            <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Clube</th>
-                        @endif
-                        <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Contrato</th>
-                        <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Landing</th>
-                        <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Status</th>
-                        <th scope="col" class="px-4 py-4 text-end text-sm font-medium text-gray-500 dark:text-gray-400">Ações</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                    @forelse ($sponsors as $sponsor)
-                        <tr>
-                            <td class="px-4 py-4 whitespace-nowrap">
-                                <div class="flex items-center gap-3">
-                                    <img src="{{ sponsor_logo_url($sponsor, $loop->index) }}" alt="{{ $sponsor->name }}" class="h-9 w-16 object-contain rounded border border-gray-100 dark:border-gray-700 p-0.5 bg-white dark:bg-gray-800">
-                                    <span class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ $sponsor->name }}</span>
-                                </div>
-                            </td>
-                            <td class="px-4 py-4 whitespace-nowrap">
-                                <span class="inline-flex py-1 px-2 rounded-md text-xs font-medium bg-primary/10 text-primary">{{ $sponsor->tier->label() }}</span>
-                            </td>
-                            @if (auth()->user()->isSuperAdmin())
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $sponsor->club->name }}</td>
-                            @endif
-                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                @if ($sponsor->contract_amount)
-                                    R$ {{ number_format($sponsor->contract_amount, 2, ',', '.') }}
-                                @else
-                                    -
-                                @endif
-                            </td>
-                            <td class="px-4 py-4 whitespace-nowrap">
-                                @include('partials.attex.status-badge', [
-                                    'active' => $sponsor->show_on_landing,
-                                    'activeLabel' => 'Visível',
-                                    'inactiveLabel' => 'Oculto',
-                                ])
-                            </td>
-                            <td class="px-4 py-4 whitespace-nowrap">@include('partials.attex.status-badge', ['active' => $sponsor->is_active])</td>
-                            <td class="px-4 py-4 whitespace-nowrap text-end">
-                                @include('partials.attex.row-actions', [
-                                    'showUrl' => route('sponsors.show', $sponsor),
-                                    'editUrl' => route('sponsors.edit', $sponsor),
-                                    'deleteUrl' => route('sponsors.destroy', $sponsor),
-                                ])
-                            </td>
-                        </tr>
-                    @empty
-                        @include('partials.attex.empty-row', ['colspan' => auth()->user()->isSuperAdmin() ? 7 : 6, 'message' => 'Nenhum patrocinador cadastrado.'])
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+@php
+    $gridColumns = [
+        ['name' => 'Patrocinador', 'html' => true],
+        ['name' => 'Nível', 'html' => true],
+    ];
+    if (auth()->user()->isSuperAdmin()) {
+        $gridColumns[] = ['name' => 'Clube'];
+    }
+    $gridColumns[] = ['name' => 'Contrato'];
+    $gridColumns[] = ['name' => 'Landing', 'html' => true];
+    $gridColumns[] = ['name' => 'Status', 'html' => true];
+    $gridColumns[] = ['name' => 'Ações', 'html' => true, 'sort' => false, 'width' => '150px'];
 
-@include('partials.attex.pagination', ['paginator' => $sponsors])
+    $gridRows = $sponsors->map(function ($sponsor, $index) {
+        $row = [
+            '<div class="flex items-center gap-3">'
+                .'<img src="'.e(sponsor_logo_url($sponsor, $index)).'" class="h-9 w-16 object-contain rounded border border-gray-100 dark:border-gray-700 p-0.5 bg-white dark:bg-gray-800" alt="">'
+                .'<span class="font-medium text-slate-800 dark:text-slate-200">'.e($sponsor->name).'</span>'
+                .'</div>',
+            '<span class="inline-flex py-1 px-2 rounded-md text-xs font-medium bg-primary/10 text-primary">'.e($sponsor->tier->label()).'</span>',
+        ];
+        if (auth()->user()->isSuperAdmin()) {
+            $row[] = e($sponsor->club->name);
+        }
+        $row[] = $sponsor->contract_amount
+            ? 'R$ '.number_format($sponsor->contract_amount, 2, ',', '.')
+            : '-';
+        $row[] = attex_status_badge_html($sponsor->show_on_landing, 'Visível', 'Oculto');
+        $row[] = attex_status_badge_html($sponsor->is_active);
+        $row[] = attex_row_actions_html(route('sponsors.show', $sponsor), route('sponsors.edit', $sponsor), route('sponsors.destroy', $sponsor));
+
+        return $row;
+    })->values()->all();
+@endphp
+
+@include('partials.attex.data-table', [
+    'title' => 'Lista de Patrocinadores',
+    'count' => $sponsors->count(),
+    'columns' => $gridColumns,
+    'rows' => $gridRows,
+])
 @endsection

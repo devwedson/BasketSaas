@@ -20,7 +20,7 @@ class GameController extends Controller
         $games = $this->scopeByClub(
             Game::query()->with(['team', 'club'])->orderBy('scheduled_at'),
             $request
-        )->paginate(10);
+        )->get();
 
         return view('games.index', compact('games'));
     }

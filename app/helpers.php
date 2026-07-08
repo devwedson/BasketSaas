@@ -249,3 +249,27 @@ if (! function_exists('landing_image')) {
         return storage_or_asset($path, $fallback);
     }
 }
+
+if (! function_exists('attex_status_badge_html')) {
+    function attex_status_badge_html(bool $active, ?string $activeLabel = null, ?string $inactiveLabel = null): string
+    {
+        return view('partials.attex.status-badge', [
+            'active' => $active,
+            'activeLabel' => $activeLabel,
+            'inactiveLabel' => $inactiveLabel,
+        ])->render();
+    }
+}
+
+if (! function_exists('attex_row_actions_html')) {
+    function attex_row_actions_html(?string $showUrl = null, ?string $editUrl = null, ?string $deleteUrl = null, ?string $deleteConfirm = null, ?string $deleteTitle = null): string
+    {
+        return view('partials.attex.row-actions-html', [
+            'showUrl' => $showUrl,
+            'editUrl' => $editUrl,
+            'deleteUrl' => $deleteUrl,
+            'deleteConfirm' => $deleteConfirm,
+            'deleteTitle' => $deleteTitle,
+        ])->render();
+    }
+}

@@ -12,59 +12,39 @@
     'actionIcon' => 'ri-add-line',
 ])
 
-<div class="card">
-    <div class="card-header flex justify-between items-center">
-        <h4 class="card-title">Lista de Jogos</h4>
-        <span class="text-sm text-gray-500 dark:text-gray-400">{{ $games->total() }} registro(s)</span>
-    </div>
-    <div class="p-6">
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead>
-                    <tr>
-                        <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Confronto</th>
-                        <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Data/Hora</th>
-                        <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Placar</th>
-                        <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Time</th>
-                        <th scope="col" class="px-4 py-4 text-end text-sm font-medium text-gray-500 dark:text-gray-400">Ações</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                    @forelse ($games as $game)
-                        <tr>
-                            <td class="px-4 py-4 whitespace-nowrap">
-                                <div class="flex items-center gap-3">
-                                    <img src="{{ team_logo_url($game->team, 'images/team-logo-1.png') }}" alt="" class="h-8 w-8 object-contain">
-                                    <span class="text-gray-400 dark:text-gray-500">vs</span>
-                                    <img src="{{ game_opponent_logo_url($game) }}" alt="" class="h-8 w-8 object-contain">
-                                    <span class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ $game->opponent }}</span>
-                                </div>
-                            </td>
-                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $game->scheduled_at->format('d/m/Y H:i') }}</td>
-                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                @if ($game->home_score !== null)
-                                    <span class="inline-flex py-1 px-2 rounded-md bg-primary/10 text-primary text-xs font-medium">{{ $game->home_score }} x {{ $game->away_score }}</span>
-                                @else
-                                    -
-                                @endif
-                            </td>
-                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $game->team?->name ?? '-' }}</td>
-                            <td class="px-4 py-4 whitespace-nowrap text-end">
-                                @include('partials.attex.row-actions', [
-                                    'showUrl' => route('games.show', $game),
-                                    'editUrl' => route('games.edit', $game),
-                                    'deleteUrl' => route('games.destroy', $game),
-                                ])
-                            </td>
-                        </tr>
-                    @empty
-                        @include('partials.attex.empty-row', ['colspan' => 5])
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+@php
+    $gridColumns = [
+        ['name' => 'Confronto', 'html' => true],
+        ['name' => 'Data/Hora'],
+        ['name' => 'Placar', 'html' => true],
+        ['name' => 'Time'],
+        ['name' => 'Ações', 'html' => true, 'sort' => false, 'width' => '150px'],
+    ];
+    $gridRows = $games->map(function ($game) {
+        $confronto = '<div class="flex items-center gap-3">'
+            .'<img src="'.e(team_logo_url($game->team, 'images/team-logo-1.png')).'" class="h-8 w-8 object-contain" alt="">'
+            .'<span class="text-gray-400 dark:text-gray-500">vs</span>'
+            .'<img src="'.e(game_opponent_logo_url($game)).'" class="h-8 w-8 object-contain" alt="">'
+            .'<span class="font-medium text-slate-800 dark:text-slate-200">'.e($game->opponent).'</span>'
+            .'</div>';
+        $placar = $game->home_score !== null
+            ? '<span class="inline-flex py-1 px-2 rounded-md bg-primary/10 text-primary text-xs font-medium">'.e($game->home_score).' x '.e($game->away_score).'</span>'
+            : '-';
 
-@include('partials.attex.pagination', ['paginator' => $games])
+        return [
+            $confronto,
+            e($game->scheduled_at->format('d/m/Y H:i')),
+            $placar,
+            e($game->team?->name ?? '-'),
+            attex_row_actions_html(route('games.show', $game), route('games.edit', $game), route('games.destroy', $game)),
+        ];
+    })->values()->all();
+@endphp
+
+@include('partials.attex.data-table', [
+    'title' => 'Lista de Jogos',
+    'count' => $games->count(),
+    'columns' => $gridColumns,
+    'rows' => $gridRows,
+])
 @endsection

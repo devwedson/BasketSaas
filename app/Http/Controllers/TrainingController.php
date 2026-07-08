@@ -20,7 +20,7 @@ class TrainingController extends Controller
         $trainings = $this->scopeByClub(
             Training::query()->with(['team', 'club'])->orderBy('scheduled_at'),
             $request
-        )->paginate(10);
+        )->get();
 
         return view('trainings.index', compact('trainings'));
     }

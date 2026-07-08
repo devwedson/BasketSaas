@@ -12,14 +12,24 @@
     ],
 ])
 
-<div class="grid 2xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-2 gap-6 mb-6">
+<div class="grid 2xl:grid-cols-5 lg:grid-cols-6 md:grid-cols-2 gap-6 mb-6">
     @if (auth()->user()->isSuperAdmin())
-        @include('partials.attex.stat-card', ['label' => 'Clubes', 'value' => $stats['clubs'], 'icon' => 'ri-building-2-line'])
+        <div class="2xl:col-span-1 lg:col-span-2">
+            @include('partials.attex.stat-card', ['label' => 'Clubes', 'value' => $stats['clubs'], 'icon' => 'ri-building-2-line'])
+        </div>
     @endif
-    @include('partials.attex.stat-card', ['label' => 'Times', 'value' => $stats['teams'], 'icon' => 'ri-team-line'])
-    @include('partials.attex.stat-card', ['label' => 'Atletas Ativos', 'value' => $stats['players'], 'icon' => 'ri-user-star-line'])
-    @include('partials.attex.stat-card', ['label' => 'Próximos Treinos', 'value' => $stats['trainings'], 'icon' => 'ri-basketball-line'])
-    @include('partials.attex.stat-card', ['label' => 'Próximos Jogos', 'value' => $stats['games'], 'icon' => 'ri-trophy-line'])
+    <div class="2xl:col-span-1 lg:col-span-2">
+        @include('partials.attex.stat-card', ['label' => 'Times', 'value' => $stats['teams'], 'icon' => 'ri-team-line'])
+    </div>
+    <div class="2xl:col-span-1 lg:col-span-2">
+        @include('partials.attex.stat-card', ['label' => 'Atletas Ativos', 'value' => $stats['players'], 'icon' => 'ri-user-star-line'])
+    </div>
+    <div class="2xl:col-span-1 lg:col-span-2">
+        @include('partials.attex.stat-card', ['label' => 'Próximos Treinos', 'value' => $stats['trainings'], 'icon' => 'ri-basketball-line'])
+    </div>
+    <div class="2xl:col-span-1 lg:col-span-2">
+        @include('partials.attex.stat-card', ['label' => 'Próximos Jogos', 'value' => $stats['games'], 'icon' => 'ri-trophy-line'])
+    </div>
 </div>
 
 @if ($inscriptionPayment)
@@ -66,31 +76,31 @@
             <h4 class="card-title">Próximos Treinos</h4>
             <a href="{{ route('trainings.index') }}" class="btn btn-sm bg-light text-dark dark:bg-gray-700 dark:text-gray-200">Ver todos</a>
         </div>
-        <div class="p-6 pt-0">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead>
+        <div class="relative overflow-x-auto">
+            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead class="bg-light/40 border-b border-gray-100 dark:bg-light/5 dark:border-b-gray-700">
+                    <tr>
+                        <th class="py-1.5 px-4">Treino</th>
+                        <th class="py-1.5 px-4">Local</th>
+                        <th class="py-1.5 px-4 text-end">Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($upcomingTrainings as $training)
                         <tr>
-                            <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Treino</th>
-                            <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Local</th>
-                            <th scope="col" class="px-4 py-4 text-end text-sm font-medium text-gray-500 dark:text-gray-400">Data</th>
+                            <td class="p-4 font-medium text-gray-800 dark:text-gray-200">
+                                <a href="{{ route('trainings.show', $training) }}" class="hover:text-primary">{{ $training->title }}</a>
+                            </td>
+                            <td class="p-4">{{ $training->location ?? 'A definir' }}</td>
+                            <td class="p-4 text-end">{{ $training->scheduled_at->format('d/m/Y H:i') }}</td>
                         </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                        @forelse ($upcomingTrainings as $training)
-                            <tr>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
-                                    <a href="{{ route('trainings.show', $training) }}" class="hover:text-primary">{{ $training->title }}</a>
-                                </td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $training->location ?? 'A definir' }}</td>
-                                <td class="px-4 py-4 text-end whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $training->scheduled_at->format('d/m/Y H:i') }}</td>
-                            </tr>
-                        @empty
-                            @include('partials.attex.empty-row', ['colspan' => 3, 'message' => 'Nenhum treino agendado.'])
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                    @empty
+                        <tr>
+                            <td colspan="3" class="p-4 text-center text-gray-400">Nenhum treino agendado.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -99,31 +109,31 @@
             <h4 class="card-title">Próximos Jogos</h4>
             <a href="{{ route('games.index') }}" class="btn btn-sm bg-light text-dark dark:bg-gray-700 dark:text-gray-200">Ver todos</a>
         </div>
-        <div class="p-6 pt-0">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead>
+        <div class="relative overflow-x-auto">
+            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead class="bg-light/40 border-b border-gray-100 dark:bg-light/5 dark:border-b-gray-700">
+                    <tr>
+                        <th class="py-1.5 px-4">Confronto</th>
+                        <th class="py-1.5 px-4">Local</th>
+                        <th class="py-1.5 px-4 text-end">Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($upcomingGames as $game)
                         <tr>
-                            <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Confronto</th>
-                            <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Local</th>
-                            <th scope="col" class="px-4 py-4 text-end text-sm font-medium text-gray-500 dark:text-gray-400">Data</th>
+                            <td class="p-4 font-medium text-gray-800 dark:text-gray-200">
+                                <a href="{{ route('games.show', $game) }}" class="hover:text-primary">vs {{ $game->opponent }}</a>
+                            </td>
+                            <td class="p-4">{{ $game->location ?? 'A definir' }}</td>
+                            <td class="p-4 text-end">{{ $game->scheduled_at->format('d/m/Y H:i') }}</td>
                         </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                        @forelse ($upcomingGames as $game)
-                            <tr>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
-                                    <a href="{{ route('games.show', $game) }}" class="hover:text-primary">vs {{ $game->opponent }}</a>
-                                </td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $game->location ?? 'A definir' }}</td>
-                                <td class="px-4 py-4 text-end whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $game->scheduled_at->format('d/m/Y H:i') }}</td>
-                            </tr>
-                        @empty
-                            @include('partials.attex.empty-row', ['colspan' => 3, 'message' => 'Nenhum jogo agendado.'])
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                    @empty
+                        <tr>
+                            <td colspan="3" class="p-4 text-center text-gray-400">Nenhum jogo agendado.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

@@ -12,51 +12,27 @@
     'actionIcon' => 'ri-add-line',
 ])
 
-<div class="card">
-    <div class="card-header flex justify-between items-center">
-        <h4 class="card-title">Lista da Comissão</h4>
-        <span class="text-sm text-gray-500 dark:text-gray-400">{{ $staffMembers->total() }} registro(s)</span>
-    </div>
-    <div class="p-6">
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead>
-                    <tr>
-                        <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Profissional</th>
-                        <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Função</th>
-                        <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Time</th>
-                        <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Status</th>
-                        <th scope="col" class="px-4 py-4 text-end text-sm font-medium text-gray-500 dark:text-gray-400">Ações</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                    @forelse ($staffMembers as $member)
-                        <tr>
-                            <td class="px-4 py-4 whitespace-nowrap">
-                                <div class="flex items-center gap-3">
-                                    <img src="{{ staff_photo_url($member) }}" alt="{{ $member->name }}" class="h-9 w-9 rounded-full object-cover border border-gray-100 dark:border-gray-700">
-                                    <span class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ $member->name }}</span>
-                                </div>
-                            </td>
-                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $member->role->label() }}</td>
-                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $member->team?->name ?? '-' }}</td>
-                            <td class="px-4 py-4 whitespace-nowrap">@include('partials.attex.status-badge', ['active' => $member->is_active])</td>
-                            <td class="px-4 py-4 whitespace-nowrap text-end">
-                                @include('partials.attex.row-actions', [
-                                    'showUrl' => route('staff.show', $member),
-                                    'editUrl' => route('staff.edit', $member),
-                                    'deleteUrl' => route('staff.destroy', $member),
-                                ])
-                            </td>
-                        </tr>
-                    @empty
-                        @include('partials.attex.empty-row', ['colspan' => 5])
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+@php
+    $gridColumns = [
+        ['name' => 'Profissional', 'html' => true],
+        ['name' => 'Função'],
+        ['name' => 'Time'],
+        ['name' => 'Status', 'html' => true],
+        ['name' => 'Ações', 'html' => true, 'sort' => false, 'width' => '150px'],
+    ];
+    $gridRows = $staffMembers->map(fn ($member) => [
+        '<div class="flex items-center gap-3"><img src="'.e(staff_photo_url($member)).'" class="h-9 w-9 rounded-full object-cover border border-gray-100 dark:border-gray-700" alt=""><span class="font-medium text-slate-800 dark:text-slate-200">'.e($member->name).'</span></div>',
+        e($member->role->label()),
+        e($member->team?->name ?? '-'),
+        attex_status_badge_html($member->is_active),
+        attex_row_actions_html(route('staff.show', $member), route('staff.edit', $member), route('staff.destroy', $member)),
+    ])->values()->all();
+@endphp
 
-@include('partials.attex.pagination', ['paginator' => $staffMembers])
+@include('partials.attex.data-table', [
+    'title' => 'Lista da Comissão',
+    'count' => $staffMembers->count(),
+    'columns' => $gridColumns,
+    'rows' => $gridRows,
+])
 @endsection

@@ -12,53 +12,29 @@
     'actionIcon' => 'ri-add-line',
 ])
 
-<div class="card">
-    <div class="card-header flex justify-between items-center">
-        <h4 class="card-title">Lista de Jogadores</h4>
-        <span class="text-sm text-gray-500 dark:text-gray-400">{{ $players->total() }} registro(s)</span>
-    </div>
-    <div class="p-6">
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead>
-                    <tr>
-                        <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Atleta</th>
-                        <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Nº</th>
-                        <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Posição</th>
-                        <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Time</th>
-                        <th scope="col" class="px-4 py-4 text-start text-sm font-medium text-gray-500 dark:text-gray-400">Status</th>
-                        <th scope="col" class="px-4 py-4 text-end text-sm font-medium text-gray-500 dark:text-gray-400">Ações</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                    @forelse ($players as $player)
-                        <tr>
-                            <td class="px-4 py-4 whitespace-nowrap">
-                                <div class="flex items-center gap-3">
-                                    <img src="{{ player_photo_url($player) }}" alt="{{ $player->name }}" class="h-9 w-9 rounded-full object-cover border border-gray-100 dark:border-gray-700">
-                                    <span class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ $player->name }}</span>
-                                </div>
-                            </td>
-                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $player->number ?? '-' }}</td>
-                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $player->position?->label() ?? '-' }}</td>
-                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $player->team?->name ?? '-' }}</td>
-                            <td class="px-4 py-4 whitespace-nowrap">@include('partials.attex.status-badge', ['active' => $player->is_active])</td>
-                            <td class="px-4 py-4 whitespace-nowrap text-end">
-                                @include('partials.attex.row-actions', [
-                                    'showUrl' => route('players.show', $player),
-                                    'editUrl' => route('players.edit', $player),
-                                    'deleteUrl' => route('players.destroy', $player),
-                                ])
-                            </td>
-                        </tr>
-                    @empty
-                        @include('partials.attex.empty-row', ['colspan' => 6])
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+@php
+    $gridColumns = [
+        ['name' => 'Atleta', 'html' => true],
+        ['name' => 'Nº'],
+        ['name' => 'Posição'],
+        ['name' => 'Time'],
+        ['name' => 'Status', 'html' => true],
+        ['name' => 'Ações', 'html' => true, 'sort' => false, 'width' => '150px'],
+    ];
+    $gridRows = $players->map(fn ($player) => [
+        '<div class="flex items-center gap-3"><img src="'.e(player_photo_url($player)).'" class="h-9 w-9 rounded-full object-cover border border-gray-100 dark:border-gray-700" alt=""><span class="font-medium text-slate-800 dark:text-slate-200">'.e($player->name).'</span></div>',
+        e($player->number ?? '-'),
+        e($player->position?->label() ?? '-'),
+        e($player->team?->name ?? '-'),
+        attex_status_badge_html($player->is_active),
+        attex_row_actions_html(route('players.show', $player), route('players.edit', $player), route('players.destroy', $player)),
+    ])->values()->all();
+@endphp
 
-@include('partials.attex.pagination', ['paginator' => $players])
+@include('partials.attex.data-table', [
+    'title' => 'Lista de Jogadores',
+    'count' => $players->count(),
+    'columns' => $gridColumns,
+    'rows' => $gridRows,
+])
 @endsection

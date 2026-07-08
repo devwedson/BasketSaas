@@ -9,8 +9,8 @@
                         </span>
                     </div>
                 @endif
-                <h5 class="text-base/3 text-gray-400 dark:text-gray-500 font-normal mt-0">{{ $label }}</h5>
-                <h3 class="text-2xl my-3 text-slate-900 dark:text-slate-100">{{ $value }}</h3>
+                <h5 class="text-base/3 text-gray-400 dark:text-gray-500 font-normal mt-0" title="{{ $label }}">{{ $label }}</h5>
+                <h3 class="text-2xl my-6 text-slate-900 dark:text-slate-100">{{ $value }}</h3>
                 @if (!empty($hint))
                     <p class="text-gray-400 dark:text-gray-500 truncate text-sm">{{ $hint }}</p>
                 @endif

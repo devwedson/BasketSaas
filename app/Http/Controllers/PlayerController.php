@@ -20,7 +20,7 @@ class PlayerController extends Controller
         $players = $this->scopeByClub(
             Player::query()->with(['team', 'club'])->latest(),
             $request
-        )->paginate(10);
+        )->get();
 
         return view('players.index', compact('players'));
     }

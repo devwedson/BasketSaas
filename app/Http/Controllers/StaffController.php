@@ -23,7 +23,7 @@ class StaffController extends Controller
         $staffMembers = $this->scopeByClub(
             Staff::query()->with(['team', 'club', 'latestInscriptionPayment'])->latest(),
             $request
-        )->paginate(10);
+        )->get();
 
         return view('staff.index', [
             'staffMembers' => $staffMembers,
