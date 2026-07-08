@@ -74,6 +74,8 @@
                     @endif
                 </div>
 
+                @include('landing.partials.footer-sponsors', ['club' => $club ?? null])
+
                 <div class="footer-menu-box">
                     <div class="footer-menu">
                         <ul>

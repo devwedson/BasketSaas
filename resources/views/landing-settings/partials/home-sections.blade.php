@@ -6,6 +6,7 @@
         'home_programs' => 'Programas (home)',
         'home_matches' => 'Jogos (home)',
         'home_team' => 'Equipe (home)',
+        'home_sponsors' => 'Patrocinadores (home)',
         'home_cta' => 'CTA (home)',
         'home_testimonials' => 'Depoimentos (home)',
         'home_faqs' => 'FAQ (home)',
@@ -33,6 +34,7 @@
         'footer_link' => 'Link do rodapé',
         'footer_route' => 'Rota do link',
         'sponsors_title' => 'Título dos patrocinadores',
+        'footer_title' => 'Título no rodapé',
         'sidebar_title' => 'Título da barra lateral',
     ];
 @endphp

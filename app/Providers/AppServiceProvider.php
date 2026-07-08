@@ -46,9 +46,22 @@ class AppServiceProvider extends ServiceProvider
             // Ignora falha de conexão durante migrate, cache:clear, etc.
         }
 
-        View::composer(['landing.partials.header', 'landing.partials.footer', 'landing.partials.head'], function ($view) {
+        View::composer([
+            'landing.partials.header',
+            'landing.partials.footer',
+            'landing.partials.head',
+            'landing.partials.sponsors-section',
+            'landing.partials.footer-sponsors',
+        ], function ($view) {
+            $landing = app(LandingDataService::class);
+            $club = $view->offsetExists('club') ? $view->offsetGet('club') : $landing->featuredClub();
+
             if (! $view->offsetExists('club')) {
-                $view->with('club', app(LandingDataService::class)->featuredClub());
+                $view->with('club', $club);
+            }
+
+            if (! $view->offsetExists('sponsors')) {
+                $view->with('sponsors', $landing->sponsors($club));
             }
         });
     }

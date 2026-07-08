@@ -39,6 +39,12 @@ return [
         'footer_link' => 'Veja todas as equipes',
         'footer_route' => 'landing.team',
     ],
+    'home_sponsors' => [
+        'subtitle' => 'Patrocinadores',
+        'title' => 'Empresas que apoiam o {club}',
+        'description' => 'Marcas parceiras que acreditam no basquete e no desenvolvimento dos nossos atletas.',
+        'footer_title' => 'Nossos patrocinadores',
+    ],
     'home_cta' => [
         'subtitle' => 'Fale Conosco',
         'title' => 'Pronto para treinar, competir ou entrar no clube?',

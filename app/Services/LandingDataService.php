@@ -196,13 +196,18 @@ class LandingDataService
             return collect();
         }
 
-        return Sponsor::query()
+        $sponsors = Sponsor::query()
             ->where('club_id', $club->id)
             ->visibleOnLanding()
-            ->orderBy('sort_order')
-            ->orderBy('name')
-            ->limit($limit)
-            ->get();
+            ->get()
+            ->sortBy(fn (Sponsor $sponsor) => [
+                $sponsor->tier->sortWeight(),
+                $sponsor->sort_order,
+                $sponsor->name,
+            ])
+            ->values();
+
+        return $limit !== null ? $sponsors->take($limit)->values() : $sponsors;
     }
 
     public function eventPhotos(?Club $club, ?int $limit = null): Collection

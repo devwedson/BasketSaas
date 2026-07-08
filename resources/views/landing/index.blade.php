@@ -233,6 +233,12 @@
     </div>
 </div>
 
+@include('landing.partials.sponsors-section', [
+    'club' => $club,
+    'stats' => $stats,
+    'sponsors' => $sponsors,
+])
+
 <div class="cta-box bg-section dark-section parallaxie">
     <div class="container">
         <div class="row">
@@ -252,9 +258,6 @@
                     </div>
                 </div>
 
-                @if ($sponsors->isNotEmpty())
-                    @include('landing.partials.sponsors-slider', ['sponsors' => $sponsors])
-                @endif
             </div>
         </div>
     </div>
