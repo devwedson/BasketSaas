@@ -1,3 +1,7 @@
+@push('styles')
+<link href="{{ attex_asset('assets/css/sweetalert-attex.css') }}" rel="stylesheet" type="text/css">
+@endpush
+
 @php
     $dashboardFlash = [
         'success' => session('success'),

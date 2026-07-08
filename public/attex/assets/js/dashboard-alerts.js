@@ -7,35 +7,61 @@
             .replace(/"/g, '&quot;');
     }
 
+    function isDarkMode() {
+        return document.documentElement.getAttribute('data-mode') === 'dark';
+    }
+
+    function attexSwal() {
+        if (typeof Swal === 'undefined') {
+            return null;
+        }
+
+        return Swal.mixin({
+            buttonsStyling: false,
+            customClass: {
+                popup: 'attex-swal-popup',
+                title: 'attex-swal-title',
+                htmlContainer: 'attex-swal-text',
+                confirmButton: 'attex-swal-confirm',
+                cancelButton: 'attex-swal-cancel',
+            },
+            color: isDarkMode() ? '#cbd5e1' : '#475569',
+            background: isDarkMode() ? '#313a46' : '#ffffff',
+        });
+    }
+
+    function shouldSkipWarningPopup() {
+        return /^\/inscricao\/?$/.test(window.location.pathname);
+    }
+
     function showFlashMessages() {
         var flash = window.__dashboardFlash;
+        var swal = attexSwal();
 
-        if (!flash || typeof Swal === 'undefined') {
+        if (!flash || !swal) {
             return;
         }
 
         if (flash.success) {
-            Swal.fire({
+            swal.fire({
                 icon: 'success',
                 title: 'Sucesso',
                 text: flash.success,
                 confirmButtonText: 'OK',
-                confirmButtonColor: '#3e60d5',
             });
         }
 
-        if (flash.warning) {
-            Swal.fire({
+        if (flash.warning && !shouldSkipWarningPopup()) {
+            swal.fire({
                 icon: 'warning',
                 title: 'Atenção',
                 text: flash.warning,
                 confirmButtonText: 'OK',
-                confirmButtonColor: '#3e60d5',
             });
         }
 
         if (flash.errors && flash.errors.length) {
-            Swal.fire({
+            swal.fire({
                 icon: 'error',
                 title: 'Erro',
                 html: '<ul style="text-align:left;margin:0;padding-left:1.25rem;">'
@@ -44,7 +70,6 @@
                     }).join('')
                     + '</ul>',
                 confirmButtonText: 'OK',
-                confirmButtonColor: '#3e60d5',
             });
         }
     }
@@ -52,24 +77,30 @@
     function bindDeleteConfirmations() {
         document.addEventListener('submit', function (event) {
             var form = event.target.closest('form.js-confirm-delete');
+            var swal = attexSwal();
 
-            if (!form) {
+            if (!form || !swal) {
                 return;
             }
 
             event.preventDefault();
 
-            Swal.fire({
+            swal.fire({
                 title: form.dataset.confirmTitle || 'Excluir registro?',
                 text: form.dataset.confirmMessage || 'Esta ação não pode ser desfeita. Deseja continuar?',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#ef4444',
-                cancelButtonColor: '#6b7280',
                 confirmButtonText: 'Sim, excluir',
                 cancelButtonText: 'Cancelar',
                 reverseButtons: true,
                 focusCancel: true,
+                customClass: {
+                    popup: 'attex-swal-popup',
+                    title: 'attex-swal-title',
+                    htmlContainer: 'attex-swal-text',
+                    confirmButton: 'attex-swal-confirm attex-swal-confirm-danger',
+                    cancelButton: 'attex-swal-cancel',
+                },
             }).then(function (result) {
                 if (result.isConfirmed) {
                     HTMLFormElement.prototype.submit.call(form);

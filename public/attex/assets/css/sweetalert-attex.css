@@ -1,0 +1,81 @@
+.swal2-popup.attex-swal-popup {
+    font-family: var(--tw-body-font-family, "Figtree", sans-serif) !important;
+    border-radius: 0.5rem !important;
+    padding: 1.75rem 1.5rem 1.25rem !important;
+    box-shadow: 0 10px 40px rgba(15, 23, 42, 0.12) !important;
+}
+
+html[data-mode=dark] .swal2-popup.attex-swal-popup {
+    background: #313a46 !important;
+    color: #cbd5e1 !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35) !important;
+}
+
+.attex-swal-title {
+    font-size: 1.125rem !important;
+    font-weight: 600 !important;
+    color: #1e293b !important;
+}
+
+html[data-mode=dark] .attex-swal-title {
+    color: #f1f5f9 !important;
+}
+
+.attex-swal-text {
+    font-size: 0.9375rem !important;
+    color: #64748b !important;
+}
+
+html[data-mode=dark] .attex-swal-text {
+    color: #94a3b8 !important;
+}
+
+.attex-swal-confirm,
+.attex-swal-cancel {
+    border: none !important;
+    border-radius: 0.375rem !important;
+    padding: 0.5rem 1.25rem !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    box-shadow: none !important;
+    margin: 0 0.25rem !important;
+}
+
+.attex-swal-confirm {
+    background-color: #3e60d5 !important;
+    color: #fff !important;
+}
+
+.attex-swal-confirm:hover {
+    background-color: #3553c0 !important;
+}
+
+.attex-swal-confirm.attex-swal-confirm-danger {
+    background-color: #ef4444 !important;
+}
+
+.attex-swal-confirm.attex-swal-confirm-danger:hover {
+    background-color: #dc2626 !important;
+}
+
+.attex-swal-cancel {
+    background-color: #e5e7eb !important;
+    color: #374151 !important;
+}
+
+.attex-swal-cancel:hover {
+    background-color: #d1d5db !important;
+}
+
+html[data-mode=dark] .attex-swal-cancel {
+    background-color: #4b5563 !important;
+    color: #f9fafb !important;
+}
+
+html[data-mode=dark] .attex-swal-cancel:hover {
+    background-color: #6b7280 !important;
+}
+
+html[data-mode=dark] .swal2-timer-progress-bar {
+    background: rgba(62, 96, 213, 0.65) !important;
+}

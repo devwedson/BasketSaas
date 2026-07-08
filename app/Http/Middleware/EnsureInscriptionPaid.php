@@ -28,8 +28,6 @@ class EnsureInscriptionPaid
             return $next($request);
         }
 
-        return redirect()
-            ->route('inscription.checkout')
-            ->with('warning', 'Conclua o pagamento da inscrição para acessar o painel.');
+        return redirect()->route('inscription.checkout');
     }
 }
