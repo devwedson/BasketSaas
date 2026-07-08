@@ -269,8 +269,5 @@
     'featuredPlayers' => $featuredPlayers,
 ])
 
-@include('landing.partials.home-blog', [
-    'trainings' => $trainings,
-    'recentGames' => $recentGames,
-])
+@include('landing.partials.home-blog', ['club' => $club])
 @endsection

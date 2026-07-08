@@ -1,8 +1,13 @@
 @php
+    $landingBlog = app(\App\Services\LandingDataService::class);
+    $clubForBlog = $club ?? $landingBlog->featuredClub();
+    $trainings = $trainings ?? $landingBlog->trainings($clubForBlog, 3);
+    $recentGames = $recentGames ?? $landingBlog->recentGames($clubForBlog, 3);
+
     $posts = collect();
     $postIndex = 0;
 
-    foreach ($trainings ?? [] as $training) {
+    foreach ($trainings as $training) {
         $posts->push([
             'image' => neodunk_asset('images/post-'.(($postIndex % 6) + 1).'.jpg'),
             'tag' => $training->team?->name ?? 'Treino',
@@ -17,7 +22,7 @@
     }
 
     if ($posts->count() < 3) {
-        foreach ($recentGames ?? [] as $game) {
+        foreach ($recentGames as $game) {
             $posts->push([
                 'image' => game_cover_image_url($game, $postIndex),
                 'tag' => 'Resultado',
