@@ -32,6 +32,10 @@ window.AttexGrid = {
         return new gridjs.Grid({
             columns: columns,
             data: config.data || [],
+            className: {
+                container: 'w-full',
+                table: 'w-full',
+            },
             pagination: {
                 limit: config.pageSize || 10,
             },

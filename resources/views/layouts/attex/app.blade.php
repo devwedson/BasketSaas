@@ -5,9 +5,9 @@
     <title>@yield('title', 'Dashboard') | {{ config('app.name') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{{ attex_asset(config('attex.brand.favicon')) }}">
+    <link href="{{ attex_asset('assets/libs/gridjs/theme/mermaid.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ attex_asset('assets/css/app.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ attex_asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ attex_asset('assets/libs/gridjs/theme/mermaid.min.css') }}" rel="stylesheet" type="text/css">
     <script src="{{ attex_asset('assets/js/config.js') }}"></script>
     @stack('styles')
 </head>

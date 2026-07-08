@@ -18,7 +18,7 @@
         </div>
     </div>
     <div class="p-6">
-        <div id="{{ $tableId }}"></div>
+        <div id="{{ $tableId }}" class="w-full"></div>
     </div>
 </div>
 
