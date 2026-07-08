@@ -25,6 +25,20 @@ class LandingController extends Controller
             'sponsors' => $this->landing->sponsors($club),
             'trainings' => $this->landing->trainings($club, 3),
             'recentGames' => $this->landing->recentGames($club, 3),
+            'eventPhotos' => $this->landing->eventPhotos($club, 6),
+        ]);
+    }
+
+    public function events(): View
+    {
+        $club = $this->landing->featuredClub();
+
+        return view('landing.events', [
+            'pageTitle' => 'Eventos',
+            'currentRoute' => 'landing.events',
+            'club' => $club,
+            'stats' => $this->landing->stats($club),
+            'eventPhotos' => $this->landing->eventPhotos($club),
         ]);
     }
 

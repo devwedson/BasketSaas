@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Club;
+use App\Models\EventPhoto;
 use App\Models\Game;
 use App\Models\Player;
 use App\Models\Sponsor;
@@ -202,5 +203,22 @@ class LandingDataService
             ->orderBy('name')
             ->limit($limit)
             ->get();
+    }
+
+    public function eventPhotos(?Club $club, ?int $limit = null): Collection
+    {
+        if (! $club) {
+            return collect();
+        }
+
+        $query = EventPhoto::query()
+            ->where('club_id', $club->id)
+            ->forLanding();
+
+        if ($limit !== null) {
+            $query->limit($limit);
+        }
+
+        return $query->get();
     }
 }

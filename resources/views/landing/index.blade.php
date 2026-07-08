@@ -260,6 +260,12 @@
     </div>
 </div>
 
+@include('landing.partials.home-events', [
+    'club' => $club,
+    'stats' => $stats,
+    'eventPhotos' => $eventPhotos,
+])
+
 @include('landing.partials.home-testimonials', [
     'club' => $club,
     'featuredPlayers' => $featuredPlayers,

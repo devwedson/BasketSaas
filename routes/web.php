@@ -10,6 +10,7 @@ use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\ClubSettingsController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EventPhotoController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\InscriptionPaymentController;
 use App\Http\Controllers\LandingController;
@@ -45,6 +46,7 @@ Route::controller(LandingController::class)->group(function () {
     Route::get('/equipe/{team}', 'teamShow')->name('landing.team.show');
     Route::get('/blog', 'blog')->name('landing.blog');
     Route::get('/faq', 'faqs')->name('landing.faqs');
+    Route::get('/eventos', 'events')->name('landing.events');
 });
 
 Route::middleware('guest')->group(function () {
@@ -89,6 +91,7 @@ Route::middleware('auth')->group(function () {
             Route::put('/configuracoes/pagamentos', [PaymentSettingsController::class, 'update'])->name('payment.settings.update');
             Route::post('/configuracoes/manutencao/uploads', [SystemMaintenanceController::class, 'repairUploads'])
                 ->name('system.maintenance.uploads');
+            Route::resource('event-photos', EventPhotoController::class);
         });
 
         Route::middleware('role:club')->group(function () {

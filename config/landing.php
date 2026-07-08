@@ -116,6 +116,7 @@ return [
         ['label' => 'Jogos', 'route' => 'landing.matches'],
         ['label' => 'Equipes', 'route' => 'landing.team'],
         ['label' => 'Notícias', 'route' => 'landing.blog'],
+        ['label' => 'Eventos', 'route' => 'landing.events'],
         ['label' => 'FAQ', 'route' => 'landing.faqs'],
         ['label' => 'Contato', 'route' => 'landing.contact'],
     ],
@@ -155,6 +156,11 @@ return [
             'file' => 'blog',
             'route' => 'landing.blog',
             'title' => 'Blog',
+        ],
+        'events' => [
+            'file' => 'events',
+            'route' => 'landing.events',
+            'title' => 'Eventos',
         ],
         'faqs' => [
             'file' => 'faqs',

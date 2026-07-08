@@ -69,7 +69,7 @@ if (! function_exists('is_panel_upload_path')) {
             return false;
         }
 
-        foreach (['clubs/', 'teams/', 'players/', 'staff/', 'sponsors/', 'games/', 'landing/'] as $prefix) {
+        foreach (['clubs/', 'teams/', 'players/', 'staff/', 'sponsors/', 'games/', 'landing/', 'events/'] as $prefix) {
             if (str_starts_with($path, $prefix)) {
                 return true;
             }
@@ -242,6 +242,13 @@ if (! function_exists('landing_favicon_url')) {
         }
 
         return neodunk_asset($favicon);
+    }
+}
+
+if (! function_exists('event_photo_url')) {
+    function event_photo_url(?\App\Models\EventPhoto $photo, string $fallback = 'images/post-1.jpg'): string
+    {
+        return storage_or_asset($photo?->image, $fallback);
     }
 }
 

@@ -68,6 +68,20 @@ return [
         'subtitle' => 'Últimas Notícias',
         'title' => 'Treinos, estratégias e destaques dos nossos atletas',
     ],
+    'home_events' => [
+        'subtitle' => 'Galeria',
+        'title' => 'Momentos marcantes dos nossos eventos',
+        'description' => 'Confira fotos de torneios, festivais, confraternizações e outras atividades do clube.',
+        'footer_text' => 'Quer ver mais momentos do clube?',
+        'footer_link' => 'Ver galeria completa',
+        'footer_route' => 'landing.events',
+    ],
+    'page_events' => [
+        'header_title' => 'Eventos',
+        'subtitle' => 'Galeria de Fotos',
+        'title' => 'Registros dos eventos que marcaram nossa história',
+        'description' => 'Imagens de competições, encontros, premiações e vivências que fazem parte da nossa comunidade.',
+    ],
     'page_contact' => [
         'header_title' => 'Contato',
         'subtitle' => 'Fale Conosco!',

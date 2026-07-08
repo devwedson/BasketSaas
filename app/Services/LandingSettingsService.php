@@ -14,6 +14,7 @@ class LandingSettingsService
         'landing.matches' => 'Jogos',
         'landing.team' => 'Equipes',
         'landing.blog' => 'Notícias',
+        'landing.events' => 'Eventos',
         'landing.faqs' => 'FAQ',
         'login' => 'Login',
         'register' => 'Cadastro',

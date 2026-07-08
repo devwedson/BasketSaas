@@ -52,6 +52,12 @@
                         <span class="menu-text">Pagamentos</span>
                     </a>
                 </li>
+                <li class="menu-item">
+                    <a href="{{ route('event-photos.index') }}" class="menu-link {{ request()->routeIs('event-photos.*') ? 'active' : '' }}">
+                        <span class="menu-icon"><i class="ri-gallery-line"></i></span>
+                        <span class="menu-text">Fotos de Eventos</span>
+                    </a>
+                </li>
             @endif
 
             @if (auth()->user()->hasRole(\App\Enums\UserRole::SuperAdmin, \App\Enums\UserRole::Club))
