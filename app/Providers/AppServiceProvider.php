@@ -26,8 +26,12 @@ class AppServiceProvider extends ServiceProvider
     {
         Carbon::setLocale(config('app.locale', 'pt_BR'));
 
-        if (Schema::hasTable('settings')) {
-            app(SmtpSettingsService::class)->applyToConfig();
+        try {
+            if (Schema::hasTable('settings')) {
+                app(SmtpSettingsService::class)->applyToConfig();
+            }
+        } catch (\Throwable) {
+            // Ignora falha de conexão durante migrate, cache:clear, etc.
         }
 
         View::composer(['landing.partials.header', 'landing.partials.footer', 'landing.partials.head'], function ($view) {
