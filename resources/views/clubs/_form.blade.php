@@ -1,3 +1,7 @@
+@php
+    $club = $club ?? null;
+@endphp
+
 <div class="grid md:grid-cols-2 gap-4">
     <div class="md:col-span-2">
         <label class="font-semibold text-gray-500 dark:text-gray-400 mb-2 block">Nome *</label>

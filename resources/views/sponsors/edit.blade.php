@@ -19,6 +19,6 @@
     'formMethod' => 'PUT',
     'enctype' => 'multipart/form-data',
 ])
-    @include('sponsors._form')
+    @include('sponsors._form', ['sponsor' => $sponsor])
 @include('partials.attex.form-card-close', ['cancelUrl' => route('sponsors.show', $sponsor), 'submitLabel' => 'Atualizar Patrocinador'])
 @endsection

@@ -1,3 +1,8 @@
+@php
+    $training = $training ?? null;
+    $teams = $teams ?? collect();
+@endphp
+
 <div class="grid md:grid-cols-2 gap-4">
     @include('partials.club-select', ['selectedClubId' => optional($training)->club_id])
     <div>
