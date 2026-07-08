@@ -32,12 +32,15 @@ class InscriptionPaymentController extends Controller
             return redirect()->route('dashboard')->with('success', 'Sua inscrição já está paga.');
         }
 
-        $payment = $this->inscriptions->pendingPaymentForUser($user);
+        $payment = $this->inscriptions->ensurePendingPaymentForUser($user);
 
         if (! $payment) {
-            return redirect()
-                ->route('dashboard')
-                ->with('warning', 'Nenhuma cobrança de inscrição pendente foi encontrada para sua conta.');
+            return view('inscription.checkout', [
+                'payment' => null,
+                'checkoutUrl' => null,
+                'mercadoPagoReady' => $this->mercadoPago->isReady(),
+                'missingPayment' => true,
+            ]);
         }
 
         if (! $this->mercadoPago->isReady()) {

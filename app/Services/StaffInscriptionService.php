@@ -133,6 +133,31 @@ class StaffInscriptionService
             ->first();
     }
 
+    public function ensurePendingPaymentForUser(User $user): ?InscriptionPayment
+    {
+        if (! $user->hasRole(UserRole::Coach, UserRole::Assistant)) {
+            return null;
+        }
+
+        if (! $this->shouldChargeInscription() || $this->hasPaidInscription($user)) {
+            return null;
+        }
+
+        $pending = $this->pendingPaymentForUser($user);
+
+        if ($pending) {
+            return $pending;
+        }
+
+        $staff = Staff::query()->where('user_id', $user->id)->first();
+
+        if (! $staff) {
+            return null;
+        }
+
+        return $this->resolvePayment($staff, $user, false);
+    }
+
     public function approvedPaymentForUser(User $user): ?InscriptionPayment
     {
         if (! $user->hasRole(UserRole::Coach, UserRole::Assistant)) {

@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Enums\PaymentStatus;
 use App\Enums\PlayerPosition;
 use App\Enums\StaffRole;
 use App\Enums\UserRole;
+use App\Models\InscriptionPayment;
 use App\Models\Club;
 use App\Models\Game;
 use App\Models\GameStat;
@@ -63,7 +65,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        User::query()->updateOrCreate(
+        $coachUser = User::query()->updateOrCreate(
             ['email' => 'treinador@basketsaas.com'],
             [
                 'name' => 'Treinador Principal',
@@ -156,7 +158,7 @@ class DatabaseSeeder extends Seeder
         }
 
         $staffData = [
-            ['name' => 'Carlos Mendes', 'role' => StaffRole::Coach, 'photo' => 'images/team-1.jpg', 'team' => 'Sub-18 Masculino'],
+            ['name' => 'Carlos Mendes', 'role' => StaffRole::Coach, 'photo' => 'images/team-1.jpg', 'team' => 'Sub-18 Masculino', 'email' => 'treinador@basketsaas.com', 'user_id' => $coachUser->id],
             ['name' => 'Ana Paula Ribeiro', 'role' => StaffRole::Assistant, 'photo' => 'images/team-2.jpg', 'team' => 'Sub-16 Masculino'],
             ['name' => 'Roberto Dias', 'role' => StaffRole::PhysicalTrainer, 'photo' => 'images/team-3.jpg', 'team' => 'Adulto Masculino'],
             ['name' => 'Mariana Souza', 'role' => StaffRole::Physiotherapist, 'photo' => 'images/team-4.jpg', 'team' => null],
@@ -165,16 +167,30 @@ class DatabaseSeeder extends Seeder
         foreach ($staffData as $data) {
             $team = $data['team'] ? $teams->firstWhere('name', $data['team']) : null;
 
-            Staff::query()->updateOrCreate(
+            $staff = Staff::query()->updateOrCreate(
                 ['club_id' => $club->id, 'name' => $data['name']],
                 [
                     'team_id' => $team?->id,
                     'role' => $data['role'],
                     'photo' => $data['photo'],
-                    'email' => Str::slug($data['name']).'@neodunksp.com.br',
+                    'email' => $data['email'] ?? Str::slug($data['name']).'@neodunksp.com.br',
+                    'user_id' => $data['user_id'] ?? null,
                     'is_active' => true,
                 ]
             );
+
+            if (($data['user_id'] ?? null) === $coachUser->id) {
+                InscriptionPayment::query()->updateOrCreate(
+                    ['user_id' => $coachUser->id, 'staff_id' => $staff->id],
+                    [
+                        'club_id' => $club->id,
+                        'amount' => 150,
+                        'currency' => 'BRL',
+                        'status' => PaymentStatus::Approved,
+                        'paid_at' => now(),
+                    ]
+                );
+            }
         }
 
         $trainingsData = [

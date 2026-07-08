@@ -19,6 +19,33 @@ class InscriptionPaymentTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_coach_without_payment_does_not_loop_between_dashboard_and_checkout(): void
+    {
+        $club = Club::query()->create([
+            'name' => 'Clube Teste',
+            'slug' => 'clube-teste',
+            'is_active' => true,
+        ]);
+
+        $user = User::factory()->create([
+            'role' => UserRole::Coach,
+            'club_id' => $club->id,
+            'is_active' => true,
+            'email_verified_at' => now(),
+        ]);
+
+        $this->seedPaymentSettings();
+
+        $this->actingAs($user)
+            ->get(route('dashboard'))
+            ->assertRedirect(route('inscription.checkout'));
+
+        $this->actingAs($user)
+            ->get(route('inscription.checkout'))
+            ->assertOk()
+            ->assertSee('Nenhuma cobrança de inscrição foi encontrada');
+    }
+
     public function test_coach_with_pending_inscription_is_redirected_to_checkout(): void
     {
         $club = Club::query()->create([
