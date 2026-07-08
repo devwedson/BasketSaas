@@ -40,6 +40,15 @@ return [
         'newsletter_title' => env('LANDING_FOOTER_NEWSLETTER', 'Receba novidades exclusivas sobre jogos, eventos e o clube!'),
     ],
 
+    'images' => [
+        'about_secondary' => 'images/about-us-image-2.jpg',
+        'testimonial' => 'images/testimonial-image.jpg',
+        'faq' => 'images/faq-image.jpg',
+        'contact' => 'images/contact-us-image.jpg',
+    ],
+
+    'sections' => [],
+
     'testimonials' => [
         [
             'quote' => 'Treinar neste clube elevou completamente meu jogo. A comissão técnica foca em fundamentos, estratégia e força mental — isso me deixou muito mais confiante em quadra.',

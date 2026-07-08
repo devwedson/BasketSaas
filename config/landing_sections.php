@@ -1,0 +1,107 @@
+<?php
+
+return [
+    'hero' => [
+        'subtitle_prefix' => 'Bem-vindo ao',
+        'title' => 'Eleve sua jornada no basquete com treino profissional',
+        'counter_suffix' => '+',
+        'counter_label' => 'Atletas Ativos',
+        'btn_primary' => 'Faça Parte do Clube',
+        'btn_primary_route' => 'landing.contact',
+        'btn_secondary' => 'Conheça o Clube',
+        'btn_secondary_route' => 'landing.about',
+    ],
+    'home_about' => [
+        'subtitle' => 'Sobre o Clube',
+        'title' => 'Formando estrelas do basquete com dedicação',
+        'description' => 'Nossa abordagem prioriza fundamentos, trabalho em equipe e tomada de decisão inteligente em quadra, criando um ambiente onde cada atleta evolui no seu ritmo.',
+        'trusted_text' => 'Confiado por {players}+ atletas do clube',
+        'feature_1_title' => 'Base Sólida',
+        'feature_1_text' => '{teams} times ativos com formação técnica contínua.',
+        'feature_2_title' => 'Competição Real',
+        'feature_2_text' => '{games} jogos registrados na temporada.',
+        'btn' => 'Saiba Mais',
+        'btn_route' => 'landing.about',
+    ],
+    'home_programs' => [
+        'subtitle' => 'Nossos Programas',
+        'title' => 'Categorias e times do clube',
+        'description' => 'Programas estruturados por faixa etária, do iniciante ao competitivo, com treinos, jogos e acompanhamento da comissão técnica.',
+    ],
+    'home_matches' => [
+        'subtitle' => 'Confronto da Temporada',
+        'title' => 'Os jogos mais aguardados do clube',
+    ],
+    'home_team' => [
+        'subtitle' => 'Nossa Equipe',
+        'title' => 'Conheça os atletas que representam o clube em quadra',
+        'footer_text' => 'Do primeiro treino à excelência —',
+        'footer_link' => 'Veja todas as equipes',
+        'footer_route' => 'landing.team',
+    ],
+    'home_cta' => [
+        'subtitle' => 'Fale Conosco',
+        'title' => 'Pronto para treinar, competir ou entrar no clube?',
+        'description' => 'Seja atleta iniciante, competitivo ou torcedor — temos programas e oportunidades para todos. Entre em contato e dê o próximo passo na sua jornada no basquete.',
+        'btn_primary' => 'Entre em Contato',
+        'btn_primary_route' => 'landing.contact',
+        'btn_secondary' => 'Conheça os Programas',
+        'btn_secondary_route' => 'landing.programs',
+        'sponsors_title' => 'Apoiado por empresas e marcas parceiras',
+    ],
+    'home_testimonials' => [
+        'subtitle' => 'Depoimentos',
+        'title' => 'O que nossos atletas dizem sobre a jornada no clube',
+        'description' => 'Nossa abordagem prioriza fundamentos, trabalho em equipe e tomada de decisão inteligente em quadra, criando um ambiente onde cada atleta evolui no seu ritmo.',
+        'btn' => 'Conheça o Clube',
+        'btn_route' => 'landing.about',
+        'footer_text' => 'Acredite em um clube onde treino, suporte e competição se unem para formar campeões.',
+    ],
+    'home_faqs' => [
+        'sidebar_title' => 'Orientação clara e suporte da nossa equipe',
+        'subtitle' => 'Perguntas Frequentes',
+        'title' => 'Informações essenciais para começar sua jornada no basquete',
+        'btn' => 'Ver Todas as Perguntas',
+        'btn_route' => 'landing.faqs',
+    ],
+    'home_blog' => [
+        'subtitle' => 'Últimas Notícias',
+        'title' => 'Treinos, estratégias e destaques dos nossos atletas',
+    ],
+    'page_contact' => [
+        'header_title' => 'Contato',
+        'subtitle' => 'Fale Conosco!',
+        'title' => 'Entre em contato e comece sua jornada no basquete',
+        'description' => 'Quer participar dos nossos programas, competir nos próximos jogos ou saber mais sobre o {club}? Estamos prontos para ajudar.',
+        'form_title' => 'Preencha o formulário',
+        'form_subtitle' => 'Nossa equipe analisa sua mensagem e retorna em até 24 horas úteis.',
+        'map_subtitle' => 'Nossa Localização',
+        'map_title' => 'Onde o treino encontra a oportunidade',
+        'map_description' => 'Visite nossa estrutura, conheça a equipe técnica e descubra o programa ideal para você ou seu atleta.',
+    ],
+    'page_about' => [
+        'header_title' => 'Sobre Nós',
+        'subtitle' => 'Sobre o Clube',
+        'trusted_text' => 'Confiado por {players}+ atletas do clube',
+    ],
+    'page_faqs' => [
+        'header_title' => 'Perguntas Frequentes',
+        'sidebar_cta_title' => 'Fale Conosco!',
+        'sidebar_cta_text' => 'Nossa equipe está pronta para responder suas dúvidas e orientar sua inscrição.',
+    ],
+    'page_team' => [
+        'header_title' => 'Nossas Equipes',
+        'subtitle' => 'Equipes Participantes',
+        'title' => 'Conheça os times do {club}',
+        'description' => 'Selecione uma equipe para ver o elenco completo de atletas.',
+    ],
+    'page_programs' => [
+        'header_title' => 'Programas',
+    ],
+    'page_matches' => [
+        'header_title' => 'Jogos',
+    ],
+    'page_blog' => [
+        'header_title' => 'Notícias',
+    ],
+];

@@ -6,6 +6,26 @@ use App\Models\Setting;
 
 class LandingSettingsService
 {
+    public const ROUTE_OPTIONS = [
+        'landing' => 'Início',
+        'landing.about' => 'Sobre',
+        'landing.contact' => 'Contato',
+        'landing.programs' => 'Programas',
+        'landing.matches' => 'Jogos',
+        'landing.team' => 'Equipes',
+        'landing.blog' => 'Notícias',
+        'landing.faqs' => 'FAQ',
+        'login' => 'Login',
+        'register' => 'Cadastro',
+    ];
+
+    public const IMAGE_KEYS = [
+        'about_secondary' => 'images/about-us-image-2.jpg',
+        'testimonial' => 'images/testimonial-image.jpg',
+        'faq' => 'images/faq-image.jpg',
+        'contact' => 'images/contact-us-image.jpg',
+    ];
+
     public const KEYS = [
         'landing.brand.name',
         'landing.brand.tagline',
@@ -24,6 +44,14 @@ class LandingSettingsService
         'landing.cta.header_label',
         'landing.cta.header_route',
         'landing.footer.newsletter_title',
+        'landing.sections',
+        'landing.testimonials',
+        'landing.faqs',
+        'landing.menu',
+        'landing.images.about_secondary',
+        'landing.images.testimonial',
+        'landing.images.faq',
+        'landing.images.contact',
     ];
 
     public function all(): array
@@ -50,6 +78,11 @@ class LandingSettingsService
             'cta_header_label' => (string) ($stored->get('landing.cta.header_label') ?: config('landing.cta.header_label')),
             'cta_header_route' => (string) ($stored->get('landing.cta.header_route') ?: config('landing.cta.header_route')),
             'footer_newsletter_title' => (string) ($stored->get('landing.footer.newsletter_title') ?: config('landing.footer.newsletter_title')),
+            'sections' => $this->mergedSections($stored->get('landing.sections')),
+            'testimonials' => $this->decodeJson($stored->get('landing.testimonials'), config('landing.testimonials', [])),
+            'faqs' => $this->decodeJson($stored->get('landing.faqs'), config('landing.faqs', [])),
+            'menu' => $this->decodeJson($stored->get('landing.menu'), config('landing.menu', [])),
+            'images' => $this->mergedImages($stored),
         ];
     }
 
@@ -78,6 +111,29 @@ class LandingSettingsService
         if (! empty($data['brand_favicon_path'])) {
             $this->put('landing.brand.favicon', $data['brand_favicon_path']);
         }
+
+        if (isset($data['sections']) && is_array($data['sections'])) {
+            $this->putJson('landing.sections', $this->sanitizeSections($data['sections']));
+        }
+
+        if (isset($data['testimonials']) && is_array($data['testimonials'])) {
+            $this->putJson('landing.testimonials', $this->sanitizeTestimonials($data['testimonials']));
+        }
+
+        if (isset($data['faqs']) && is_array($data['faqs'])) {
+            $this->putJson('landing.faqs', $this->sanitizeFaqs($data['faqs']));
+        }
+
+        if (isset($data['menu']) && is_array($data['menu'])) {
+            $this->putJson('landing.menu', $this->sanitizeMenu($data['menu']));
+        }
+
+        foreach (array_keys(self::IMAGE_KEYS) as $imageKey) {
+            $pathKey = "image_{$imageKey}_path";
+            if (! empty($data[$pathKey])) {
+                $this->put("landing.images.{$imageKey}", $data[$pathKey]);
+            }
+        }
     }
 
     public function applyToConfig(): void
@@ -102,7 +158,143 @@ class LandingSettingsService
             'landing.cta.header_label' => $settings['cta_header_label'],
             'landing.cta.header_route' => $settings['cta_header_route'],
             'landing.footer.newsletter_title' => $settings['footer_newsletter_title'],
+            'landing.sections' => $settings['sections'],
+            'landing.testimonials' => $settings['testimonials'],
+            'landing.faqs' => $settings['faqs'],
+            'landing.menu' => $settings['menu'],
+            'landing.images' => $settings['images'],
         ]);
+    }
+
+    public function sectionDefaults(): array
+    {
+        return config('landing_sections', []);
+    }
+
+    private function mergedSections(?string $storedJson): array
+    {
+        $defaults = $this->sectionDefaults();
+        $stored = $this->decodeJson($storedJson, []);
+
+        return $this->deepMerge($defaults, $stored);
+    }
+
+    private function mergedImages($stored): array
+    {
+        $images = [];
+
+        foreach (self::IMAGE_KEYS as $key => $fallback) {
+            $settingKey = "landing.images.{$key}";
+            $images[$key] = (string) ($stored->get($settingKey) ?: $fallback);
+        }
+
+        return $images;
+    }
+
+    private function decodeJson(?string $value, array $fallback): array
+    {
+        if (blank($value)) {
+            return $fallback;
+        }
+
+        $decoded = json_decode($value, true);
+
+        return is_array($decoded) ? $decoded : $fallback;
+    }
+
+    private function putJson(string $key, array $value): void
+    {
+        $this->put($key, json_encode($value, JSON_UNESCAPED_UNICODE));
+    }
+
+    private function sanitizeSections(array $sections): array
+    {
+        $defaults = $this->sectionDefaults();
+        $sanitized = [];
+
+        foreach ($defaults as $sectionKey => $fields) {
+            $input = $sections[$sectionKey] ?? [];
+            $sanitized[$sectionKey] = [];
+
+            foreach ($fields as $fieldKey => $defaultValue) {
+                $value = $input[$fieldKey] ?? $defaultValue;
+                $sanitized[$sectionKey][$fieldKey] = is_string($value)
+                    ? trim($value)
+                    : (string) $value;
+            }
+        }
+
+        return $sanitized;
+    }
+
+    private function sanitizeTestimonials(array $testimonials): array
+    {
+        return collect($testimonials)
+            ->map(fn ($item) => ['quote' => trim((string) ($item['quote'] ?? ''))])
+            ->filter(fn ($item) => $item['quote'] !== '')
+            ->values()
+            ->take(6)
+            ->all();
+    }
+
+    private function sanitizeFaqs(array $faqs): array
+    {
+        return collect($faqs)
+            ->map(function ($category, $index) {
+                $items = collect($category['items'] ?? [])
+                    ->map(fn ($item) => [
+                        'question' => trim((string) ($item['question'] ?? '')),
+                        'answer' => trim((string) ($item['answer'] ?? '')),
+                    ])
+                    ->filter(fn ($item) => $item['question'] !== '' && $item['answer'] !== '')
+                    ->values()
+                    ->all();
+
+                $id = trim((string) ($category['id'] ?? ''));
+                if ($id === '') {
+                    $id = 'faq_'.($index + 1);
+                }
+
+                return [
+                    'category' => trim((string) ($category['category'] ?? '')),
+                    'id' => preg_replace('/[^a-z0-9_]/i', '_', $id) ?: 'faq_'.($index + 1),
+                    'items' => $items,
+                ];
+            })
+            ->filter(fn ($category) => $category['category'] !== '' && ! empty($category['items']))
+            ->values()
+            ->all();
+    }
+
+    private function sanitizeMenu(array $menu): array
+    {
+        $allowedRoutes = array_keys(self::ROUTE_OPTIONS);
+
+        return collect($menu)
+            ->map(fn ($item) => [
+                'label' => trim((string) ($item['label'] ?? '')),
+                'route' => in_array($item['route'] ?? '', $allowedRoutes, true)
+                    ? $item['route']
+                    : 'landing',
+            ])
+            ->filter(fn ($item) => $item['label'] !== '')
+            ->values()
+            ->all();
+    }
+
+    private function deepMerge(array $defaults, array $overrides): array
+    {
+        $merged = $defaults;
+
+        foreach ($overrides as $key => $value) {
+            if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
+                $merged[$key] = $this->deepMerge($merged[$key], $value);
+            } else {
+                $merged[$key] = $value;
+            }
+        }
+
+        return $merged;
     }
 
     private function put(string $key, ?string $value): void

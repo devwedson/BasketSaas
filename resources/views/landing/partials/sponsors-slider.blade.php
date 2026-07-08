@@ -7,7 +7,7 @@
 <div class="cta-company-slider-box wow fadeInUp" data-wow-delay="0.2s">
     <div class="cta-company-slider-content">
         <hr>
-        <h3>Apoiado por empresas e marcas parceiras</h3>
+        <h3>{{ landing_section('home_cta', 'sponsors_title') }}</h3>
         <hr>
     </div>
 

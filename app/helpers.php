@@ -208,3 +208,44 @@ if (! function_exists('landing_brand_name')) {
         return $club?->name ?? config('landing.brand.name', config('app.name'));
     }
 }
+
+if (! function_exists('landing_placeholders')) {
+    function landing_placeholders(?array $stats = null, ?\App\Models\Club $club = null): array
+    {
+        if ($stats === null || $club === null) {
+            $landingData = app(\App\Services\LandingDataService::class);
+            $club = $club ?? $landingData->featuredClub();
+            $stats = $stats ?? $landingData->stats($club);
+        }
+
+        return [
+            '{players}' => (string) ($stats['players'] ?? 0),
+            '{teams}' => (string) ($stats['teams'] ?? 0),
+            '{games}' => (string) ($stats['games'] ?? 0),
+            '{club}' => landing_brand_name($club),
+        ];
+    }
+}
+
+if (! function_exists('landing_section')) {
+    function landing_section(string $section, string $key, ?string $default = null, ?array $stats = null, ?\App\Models\Club $club = null): string
+    {
+        $value = config("landing.sections.{$section}.{$key}");
+
+        if (blank($value)) {
+            $value = config("landing_sections.{$section}.{$key}", $default ?? '');
+        }
+
+        return strtr((string) $value, landing_placeholders($stats, $club));
+    }
+}
+
+if (! function_exists('landing_image')) {
+    function landing_image(string $key, ?string $fallback = null): string
+    {
+        $fallback = $fallback ?? config("landing.images.{$key}", "images/{$key}.jpg");
+        $path = config("landing.images.{$key}");
+
+        return storage_or_asset($path, $fallback);
+    }
+}

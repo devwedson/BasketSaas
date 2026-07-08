@@ -1,6 +1,8 @@
 @php
     $quotes = config('landing.testimonials', []);
     $slides = $featuredPlayers->take(3)->values();
+    $stats = $stats ?? null;
+    $club = $club ?? null;
 @endphp
 
 @if ($slides->isNotEmpty())
@@ -9,18 +11,18 @@
         <div class="row section-row align-items-center">
             <div class="col-xl-6">
                 <div class="section-title">
-                    <span class="section-sub-title wow fadeInUp">Depoimentos</span>
-                    <h2 class="text-anime-style-3" data-cursor="-opaque">O que nossos atletas dizem sobre a jornada no clube</h2>
+                    <span class="section-sub-title wow fadeInUp">{{ landing_section('home_testimonials', 'subtitle', '', $stats, $club) }}</span>
+                    <h2 class="text-anime-style-3" data-cursor="-opaque">{{ landing_section('home_testimonials', 'title', '', $stats, $club) }}</h2>
                 </div>
             </div>
 
             <div class="col-xl-6">
                 <div class="section-content-btn">
                     <div class="section-title-content wow fadeInUp" data-wow-delay="0.2s">
-                        <p>Nossa abordagem prioriza fundamentos, trabalho em equipe e tomada de decisão inteligente em quadra, criando um ambiente onde cada atleta evolui no seu ritmo.</p>
+                        <p>{{ landing_section('home_testimonials', 'description', '', $stats, $club) }}</p>
                     </div>
                     <div class="section-btn wow fadeInUp" data-wow-delay="0.4s">
-                        <a href="{{ route('landing.about') }}" class="btn-default">Conheça o Clube</a>
+                        <a href="{{ landing_route(landing_section('home_testimonials', 'btn_route', 'landing.about', $stats, $club)) }}" class="btn-default">{{ landing_section('home_testimonials', 'btn', '', $stats, $club) }}</a>
                     </div>
                 </div>
             </div>
@@ -30,7 +32,7 @@
             <div class="col-xl-4">
                 <div class="testimonial-image">
                     <figure class="image-anime reveal">
-                        <img src="{{ neodunk_asset('images/testimonial-image.jpg') }}" alt="Depoimentos {{ landing_brand_name($club ?? null) }}">
+                        <img src="{{ landing_image('testimonial') }}" alt="Depoimentos {{ landing_brand_name($club ?? null) }}">
                     </figure>
                 </div>
             </div>
@@ -86,7 +88,7 @@
                             <img src="{{ neodunk_asset('images/icon-phone-white.svg') }}" alt="">
                         </div>
                     </div>
-                    <p>Acredite em um clube onde treino, suporte e competição se unem para formar campeões.</p>
+                    <p>{{ landing_section('home_testimonials', 'footer_text', '', $stats, $club) }}</p>
                 </div>
             </div>
         </div>

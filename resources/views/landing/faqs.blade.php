@@ -1,7 +1,7 @@
 @extends('layouts.neodunk.app')
 
 @section('content')
-@include('landing.partials.page-header', ['title' => 'Perguntas Frequentes'])
+@include('landing.partials.page-header', ['title' => landing_section('page_faqs', 'header_title')])
 
 <div class="page-faqs">
     <div class="container">
@@ -21,8 +21,8 @@
                             <img src="{{ neodunk_asset('images/icon-headphone-white.svg') }}" alt="">
                         </div>
                         <div class="sidebar-cta-box-content">
-                            <h2>Fale Conosco!</h2>
-                            <p>Nossa equipe está pronta para responder suas dúvidas e orientar sua inscrição.</p>
+                            <h2>{{ landing_section('page_faqs', 'sidebar_cta_title') }}</h2>
+                            <p>{{ landing_section('page_faqs', 'sidebar_cta_text') }}</p>
                             @if ($club?->phone ?? config('landing.contact.phone'))
                                 <h3>Telefone: <a href="tel:{{ preg_replace('/\D/', '', $club?->phone ?? config('landing.contact.phone')) }}">{{ $club?->phone ?? config('landing.contact.phone_display') }}</a></h3>
                             @endif

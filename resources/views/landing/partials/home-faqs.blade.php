@@ -3,6 +3,8 @@
         ->flatMap(fn ($category) => $category['items'])
         ->take(5)
         ->values();
+    $stats = $stats ?? null;
+    $club = $club ?? null;
 @endphp
 
 @if ($homeFaqs->isNotEmpty())
@@ -13,13 +15,13 @@
                 <div class="faq-image-box wow fadeInUp">
                     <div class="faq-image">
                         <figure class="image-anime">
-                            <img src="{{ neodunk_asset('images/faq-image.jpg') }}" alt="Perguntas frequentes">
+                            <img src="{{ landing_image('faq') }}" alt="Perguntas frequentes">
                         </figure>
                     </div>
 
                     <div class="faq-client-box">
                         <div class="faq-client-content">
-                            <h3>Orientação clara e suporte da nossa equipe</h3>
+                            <h3>{{ landing_section('home_faqs', 'sidebar_title', '', $stats, $club) }}</h3>
                         </div>
                         <div class="satisfy-client-images">
                             @foreach ($featuredPlayers->take(5) as $player)
@@ -37,8 +39,8 @@
             <div class="col-xl-7">
                 <div class="faq-content">
                     <div class="section-title">
-                        <span class="section-sub-title wow fadeInUp">Perguntas Frequentes</span>
-                        <h2 class="text-anime-style-3" data-cursor="-opaque">Informações essenciais para começar sua jornada no basquete</h2>
+                        <span class="section-sub-title wow fadeInUp">{{ landing_section('home_faqs', 'subtitle', '', $stats, $club) }}</span>
+                        <h2 class="text-anime-style-3" data-cursor="-opaque">{{ landing_section('home_faqs', 'title', '', $stats, $club) }}</h2>
                     </div>
 
                     <div class="faq-accordion" id="home-faq-accordion">
@@ -77,7 +79,7 @@
                     </div>
 
                     <div class="section-btn wow fadeInUp" data-wow-delay="0.4s" style="margin-top: 30px;">
-                        <a href="{{ route('landing.faqs') }}" class="btn-default">Ver Todas as Perguntas</a>
+                        <a href="{{ landing_route(landing_section('home_faqs', 'btn_route', 'landing.faqs', $stats, $club)) }}" class="btn-default">{{ landing_section('home_faqs', 'btn', '', $stats, $club) }}</a>
                     </div>
                 </div>
             </div>

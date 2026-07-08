@@ -1,7 +1,7 @@
 @extends('layouts.neodunk.app')
 
 @section('content')
-@include('landing.partials.page-header', ['title' => 'Notícias'])
+@include('landing.partials.page-header', ['title' => landing_section('page_blog', 'header_title')])
 
 <div class="page-blog">
     <div class="container">

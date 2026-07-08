@@ -1,7 +1,7 @@
 @extends('layouts.neodunk.app')
 
 @section('content')
-@include('landing.partials.page-header', ['title' => 'Jogos'])
+@include('landing.partials.page-header', ['title' => landing_section('page_matches', 'header_title')])
 
 @if ($upcomingGames->isNotEmpty())
 <div class="our-match bg-section dark-section">

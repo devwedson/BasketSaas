@@ -20,18 +20,18 @@ class LandingSettingsController extends Controller
 
         return view('landing-settings.edit', [
             'settings' => $landing->all(),
+            'sectionDefaults' => $landing->sectionDefaults(),
             'clubs' => $clubs,
-            'ctaRoutes' => [
-                'login' => 'Login',
-                'register' => 'Cadastro',
-                'landing.contact' => 'Contato',
-            ],
+            'ctaRoutes' => LandingSettingsService::ROUTE_OPTIONS,
+            'imageKeys' => LandingSettingsService::IMAGE_KEYS,
         ]);
     }
 
     public function update(Request $request, LandingSettingsService $landing): RedirectResponse
     {
-        $data = $request->validate([
+        $allowedRoutes = array_keys(LandingSettingsService::ROUTE_OPTIONS);
+
+        $rules = [
             'brand_name' => ['required', 'string', 'max:255'],
             'brand_tagline' => ['nullable', 'string', 'max:500'],
             'brand_logo' => ['nullable', 'image', 'max:2048'],
@@ -47,9 +47,35 @@ class LandingSettingsController extends Controller
             'social_youtube' => ['nullable', 'url', 'max:255'],
             'featured_club_slug' => ['nullable', 'string', 'max:100'],
             'cta_header_label' => ['nullable', 'string', 'max:50'],
-            'cta_header_route' => ['nullable', 'string', Rule::in(['login', 'register', 'landing.contact'])],
+            'cta_header_route' => ['nullable', 'string', Rule::in($allowedRoutes)],
             'footer_newsletter_title' => ['nullable', 'string', 'max:255'],
-        ]);
+            'sections' => ['nullable', 'array'],
+            'testimonials' => ['nullable', 'array'],
+            'testimonials.*.quote' => ['nullable', 'string', 'max:2000'],
+            'faqs' => ['nullable', 'array'],
+            'faqs.*.category' => ['nullable', 'string', 'max:255'],
+            'faqs.*.id' => ['nullable', 'string', 'max:100'],
+            'faqs.*.items' => ['nullable', 'array'],
+            'faqs.*.items.*.question' => ['nullable', 'string', 'max:500'],
+            'faqs.*.items.*.answer' => ['nullable', 'string', 'max:5000'],
+            'menu' => ['nullable', 'array'],
+            'menu.*.label' => ['nullable', 'string', 'max:50'],
+            'menu.*.route' => ['nullable', 'string', Rule::in($allowedRoutes)],
+        ];
+
+        foreach ($landing->sectionDefaults() as $sectionKey => $fields) {
+            $rules["sections.{$sectionKey}"] = ['nullable', 'array'];
+            foreach ($fields as $fieldKey => $default) {
+                $max = str_ends_with($fieldKey, '_route') ? 100 : 2000;
+                $rules["sections.{$sectionKey}.{$fieldKey}"] = ['nullable', 'string', "max:{$max}"];
+            }
+        }
+
+        foreach (array_keys(LandingSettingsService::IMAGE_KEYS) as $imageKey) {
+            $rules["image_{$imageKey}"] = ['nullable', 'image', 'max:4096'];
+        }
+
+        $data = $request->validate($rules);
 
         if ($request->hasFile('brand_logo')) {
             $data['brand_logo_path'] = $request->file('brand_logo')->store('landing/brand', 'public');
@@ -57,6 +83,12 @@ class LandingSettingsController extends Controller
 
         if ($request->hasFile('brand_favicon')) {
             $data['brand_favicon_path'] = $request->file('brand_favicon')->store('landing/brand', 'public');
+        }
+
+        foreach (array_keys(LandingSettingsService::IMAGE_KEYS) as $imageKey) {
+            if ($request->hasFile("image_{$imageKey}")) {
+                $data["image_{$imageKey}_path"] = $request->file("image_{$imageKey}")->store('landing/images', 'public');
+            }
         }
 
         $validSlugs = Club::query()->where('is_active', true)->pluck('slug')->all();

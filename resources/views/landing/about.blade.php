@@ -1,7 +1,7 @@
 @extends('layouts.neodunk.app')
 
 @section('content')
-@include('landing.partials.page-header', ['title' => 'Sobre Nós'])
+@include('landing.partials.page-header', ['title' => landing_section('page_about', 'header_title')])
 
 <div class="about-us">
     <div class="container">
@@ -18,7 +18,7 @@
                     <div class="about-us-image-box-2">
                         <div class="about-us-image">
                             <figure class="image-anime">
-                                <img src="{{ neodunk_asset('images/about-us-image-2.jpg') }}" alt="">
+                                <img src="{{ landing_image('about_secondary') }}" alt="">
                             </figure>
                         </div>
                         <div class="about-trusted-player-box">
@@ -32,7 +32,7 @@
                                 @endforeach
                             </div>
                             <div class="about-trusted-player-box-content">
-                                <p>Confiado por {{ $stats['players'] }}+ atletas do clube</p>
+                                <p>{{ landing_section('page_about', 'trusted_text', '', $stats, $club) }}</p>
                             </div>
                         </div>
                     </div>
@@ -42,7 +42,7 @@
             <div class="col-xl-7">
                 <div class="about-us-content-box">
                     <div class="section-title">
-                        <span class="section-sub-title wow fadeInUp">Sobre o Clube</span>
+                        <span class="section-sub-title wow fadeInUp">{{ landing_section('page_about', 'subtitle', '', $stats, $club) }}</span>
                         <h2 class="text-anime-style-3" data-cursor="-opaque">{{ $club?->name ?? config('landing.brand.name') }}</h2>
                         <p class="wow fadeInUp" data-wow-delay="0.2s">
                             {{ $club?->description ?? config('landing.brand.tagline') }}

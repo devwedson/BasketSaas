@@ -7,8 +7,8 @@
             <div class="col-xl-6">
                 <div class="hero-content">
                     <div class="section-title">
-                        <span class="section-sub-title wow fadeInUp">Bem-vindo ao {{ $club?->name ?? config('landing.brand.name') }}</span>
-                        <h1 class="text-anime-style-3" data-cursor="-opaque">Eleve sua jornada no basquete com treino profissional</h1>
+                        <span class="section-sub-title wow fadeInUp">{{ landing_section('hero', 'subtitle_prefix', '', $stats, $club) }} {{ $club?->name ?? config('landing.brand.name') }}</span>
+                        <h1 class="text-anime-style-3" data-cursor="-opaque">{{ landing_section('hero', 'title', '', $stats, $club) }}</h1>
                     </div>
                 </div>
             </div>
@@ -26,8 +26,8 @@
                             @endforeach
                         </div>
                         <div class="hero-client-box-content">
-                            <h2><span class="counter">{{ $stats['players'] }}</span>+</h2>
-                            <p>Atletas Ativos</p>
+                            <h2><span class="counter">{{ $stats['players'] }}</span>{{ landing_section('hero', 'counter_suffix', '+', $stats, $club) }}</h2>
+                            <p>{{ landing_section('hero', 'counter_label', '', $stats, $club) }}</p>
                         </div>
                     </div>
 
@@ -37,13 +37,13 @@
 
                     <div class="hero-button-box wow fadeInUp" data-wow-delay="0.4s">
                         <div class="hero-button">
-                            <a href="{{ route('landing.contact') }}" class="btn-default">Faça Parte do Clube</a>
+                            <a href="{{ landing_route(landing_section('hero', 'btn_primary_route', 'landing.contact', $stats, $club)) }}" class="btn-default">{{ landing_section('hero', 'btn_primary', '', $stats, $club) }}</a>
                         </div>
                         <div class="video-play-button">
-                            <a href="{{ route('landing.about') }}" data-cursor-text="Ver">
+                            <a href="{{ landing_route(landing_section('hero', 'btn_secondary_route', 'landing.about', $stats, $club)) }}" data-cursor-text="Ver">
                                 <i class="fa-solid fa-play"></i>
                             </a>
-                            <p>Conheça o Clube</p>
+                            <p>{{ landing_section('hero', 'btn_secondary', '', $stats, $club) }}</p>
                         </div>
                     </div>
                 </div>
@@ -67,7 +67,7 @@
                     <div class="about-us-image-box-2">
                         <div class="about-us-image">
                             <figure class="image-anime">
-                                <img src="{{ neodunk_asset('images/about-us-image-2.jpg') }}" alt="">
+                                <img src="{{ landing_image('about_secondary') }}" alt="">
                             </figure>
                         </div>
                         <div class="about-trusted-player-box">
@@ -81,7 +81,7 @@
                                 @endforeach
                             </div>
                             <div class="about-trusted-player-box-content">
-                                <p>Confiado por {{ $stats['players'] }}+ atletas do clube</p>
+                                <p>{{ landing_section('home_about', 'trusted_text', '', $stats, $club) }}</p>
                             </div>
                         </div>
                     </div>
@@ -91,10 +91,10 @@
             <div class="col-xl-7">
                 <div class="about-us-content-box">
                     <div class="section-title">
-                        <span class="section-sub-title wow fadeInUp">Sobre o Clube</span>
-                        <h2 class="text-anime-style-3" data-cursor="-opaque">Formando estrelas do basquete com dedicação</h2>
+                        <span class="section-sub-title wow fadeInUp">{{ landing_section('home_about', 'subtitle', '', $stats, $club) }}</span>
+                        <h2 class="text-anime-style-3" data-cursor="-opaque">{{ landing_section('home_about', 'title', '', $stats, $club) }}</h2>
                         <p class="wow fadeInUp" data-wow-delay="0.2s">
-                            {{ $club?->description ?? 'Nossa abordagem prioriza fundamentos, trabalho em equipe e tomada de decisão inteligente em quadra, criando um ambiente onde cada atleta evolui no seu ritmo.' }}
+                            {{ $club?->description ?? landing_section('home_about', 'description', '', $stats, $club) }}
                         </p>
                     </div>
 
@@ -104,8 +104,8 @@
                                 <img src="{{ neodunk_asset('images/icon-about-us-item-1.svg') }}" alt="">
                             </div>
                             <div class="about-body-item-content">
-                                <h3>Base Sólida</h3>
-                                <p>{{ $stats['teams'] }} times ativos com formação técnica contínua.</p>
+                                <h3>{{ landing_section('home_about', 'feature_1_title', '', $stats, $club) }}</h3>
+                                <p>{{ landing_section('home_about', 'feature_1_text', '', $stats, $club) }}</p>
                             </div>
                         </div>
                         <div class="about-body-item">
@@ -113,14 +113,14 @@
                                 <img src="{{ neodunk_asset('images/icon-about-us-item-2.svg') }}" alt="">
                             </div>
                             <div class="about-body-item-content">
-                                <h3>Competição Real</h3>
-                                <p>{{ $stats['games'] }} jogos registrados na temporada.</p>
+                                <h3>{{ landing_section('home_about', 'feature_2_title', '', $stats, $club) }}</h3>
+                                <p>{{ landing_section('home_about', 'feature_2_text', '', $stats, $club) }}</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="about-us-btn wow fadeInUp" data-wow-delay="0.6s">
-                        <a href="{{ route('landing.about') }}" class="btn-default">Saiba Mais</a>
+                        <a href="{{ landing_route(landing_section('home_about', 'btn_route', 'landing.about', $stats, $club)) }}" class="btn-default">{{ landing_section('home_about', 'btn', '', $stats, $club) }}</a>
                     </div>
                 </div>
             </div>
@@ -133,13 +133,13 @@
         <div class="row section-row align-items-center">
             <div class="col-xl-6">
                 <div class="section-title">
-                    <span class="section-sub-title wow fadeInUp">Nossos Programas</span>
-                    <h2 class="text-anime-style-3" data-cursor="-opaque">Categorias e times do clube</h2>
+                    <span class="section-sub-title wow fadeInUp">{{ landing_section('home_programs', 'subtitle', '', $stats, $club) }}</span>
+                    <h2 class="text-anime-style-3" data-cursor="-opaque">{{ landing_section('home_programs', 'title', '', $stats, $club) }}</h2>
                 </div>
             </div>
             <div class="col-xl-6">
                 <div class="section-title-content wow fadeInUp" data-wow-delay="0.2s">
-                    <p>Programas estruturados por faixa etária, do iniciante ao competitivo, com treinos, jogos e acompanhamento da comissão técnica.</p>
+                    <p>{{ landing_section('home_programs', 'description', '', $stats, $club) }}</p>
                 </div>
             </div>
         </div>
@@ -181,8 +181,8 @@
         <div class="row section-row">
             <div class="col-lg-12">
                 <div class="section-title section-title-center">
-                    <span class="section-sub-title wow fadeInUp">Confronto da Temporada</span>
-                    <h2 class="text-anime-style-3" data-cursor="-opaque">Os jogos mais aguardados do clube</h2>
+                    <span class="section-sub-title wow fadeInUp">{{ landing_section('home_matches', 'subtitle', '', $stats, $club) }}</span>
+                    <h2 class="text-anime-style-3" data-cursor="-opaque">{{ landing_section('home_matches', 'title', '', $stats, $club) }}</h2>
                 </div>
             </div>
         </div>
@@ -205,8 +205,8 @@
         <div class="row section-row">
             <div class="col-lg-12">
                 <div class="section-title section-title-center">
-                    <span class="section-sub-title wow fadeInUp">Nossa Equipe</span>
-                    <h2 class="text-anime-style-3" data-cursor="-opaque">Conheça os atletas que representam o clube em quadra</h2>
+                    <span class="section-sub-title wow fadeInUp">{{ landing_section('home_team', 'subtitle', '', $stats, $club) }}</span>
+                    <h2 class="text-anime-style-3" data-cursor="-opaque">{{ landing_section('home_team', 'title', '', $stats, $club) }}</h2>
                 </div>
             </div>
         </div>
@@ -226,7 +226,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="section-footer-text wow fadeInUp" data-wow-delay="0.4s">
-                    <p>Do primeiro treino à excelência — <a href="{{ route('landing.team') }}">Veja todas as equipes</a></p>
+                    <p>{{ landing_section('home_team', 'footer_text', '', $stats, $club) }} <a href="{{ landing_route(landing_section('home_team', 'footer_route', 'landing.team', $stats, $club)) }}">{{ landing_section('home_team', 'footer_link', '', $stats, $club) }}</a></p>
                 </div>
             </div>
         </div>
@@ -239,16 +239,16 @@
             <div class="col-lg-12">
                 <div class="cta-box-content">
                     <div class="section-title section-title-center">
-                        <span class="section-sub-title wow fadeInUp">Fale Conosco</span>
-                        <h2 class="text-anime-style-3" data-cursor="-opaque">Pronto para treinar, competir ou entrar no clube?</h2>
+                        <span class="section-sub-title wow fadeInUp">{{ landing_section('home_cta', 'subtitle', '', $stats, $club) }}</span>
+                        <h2 class="text-anime-style-3" data-cursor="-opaque">{{ landing_section('home_cta', 'title', '', $stats, $club) }}</h2>
                         <p class="wow fadeInUp" data-wow-delay="0.2s">
-                            Seja atleta iniciante, competitivo ou torcedor — temos programas e oportunidades para todos. Entre em contato e dê o próximo passo na sua jornada no basquete.
+                            {{ landing_section('home_cta', 'description', '', $stats, $club) }}
                         </p>
                     </div>
 
                     <div class="cta-box-btn wow fadeInUp" data-wow-delay="0.4s">
-                        <a href="{{ route('landing.contact') }}" class="btn-default">Entre em Contato</a>
-                        <a href="{{ route('landing.programs') }}" class="btn-default btn-highlighted">Conheça os Programas</a>
+                        <a href="{{ landing_route(landing_section('home_cta', 'btn_primary_route', 'landing.contact', $stats, $club)) }}" class="btn-default">{{ landing_section('home_cta', 'btn_primary', '', $stats, $club) }}</a>
+                        <a href="{{ landing_route(landing_section('home_cta', 'btn_secondary_route', 'landing.programs', $stats, $club)) }}" class="btn-default btn-highlighted">{{ landing_section('home_cta', 'btn_secondary', '', $stats, $club) }}</a>
                     </div>
                 </div>
 
@@ -263,11 +263,14 @@
 @include('landing.partials.home-testimonials', [
     'club' => $club,
     'featuredPlayers' => $featuredPlayers,
+    'stats' => $stats,
 ])
 
 @include('landing.partials.home-faqs', [
     'featuredPlayers' => $featuredPlayers,
+    'stats' => $stats,
+    'club' => $club,
 ])
 
-@include('landing.partials.home-blog', ['club' => $club])
+@include('landing.partials.home-blog', ['club' => $club, 'stats' => $stats])
 @endsection

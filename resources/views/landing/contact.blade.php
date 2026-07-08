@@ -1,7 +1,7 @@
 @extends('layouts.neodunk.app')
 
 @section('content')
-@include('landing.partials.page-header', ['title' => 'Contato'])
+@include('landing.partials.page-header', ['title' => landing_section('page_contact', 'header_title')])
 
 <div class="page-contact-us">
     <div class="container">
@@ -9,16 +9,16 @@
             <div class="col-xl-6">
                 <div class="contact-us-content">
                     <div class="section-title">
-                        <span class="section-sub-title wow fadeInUp">Fale Conosco!</span>
-                        <h2 class="text-anime-style-3" data-cursor="-opaque">Entre em contato e comece sua jornada no basquete</h2>
+                        <span class="section-sub-title wow fadeInUp">{{ landing_section('page_contact', 'subtitle', '', $stats ?? null, $club) }}</span>
+                        <h2 class="text-anime-style-3" data-cursor="-opaque">{{ landing_section('page_contact', 'title', '', $stats ?? null, $club) }}</h2>
                         <p class="wow fadeInUp" data-wow-delay="0.2s">
-                            Quer participar dos nossos programas, competir nos próximos jogos ou saber mais sobre o {{ $club?->name ?? 'clube' }}? Estamos prontos para ajudar.
+                            {{ landing_section('page_contact', 'description', '', $stats ?? null, $club) }}
                         </p>
                     </div>
 
                     <div class="contact-us-image">
                         <figure class="image-anime reveal">
-                            <img src="{{ club_contact_image_url($club) }}" alt="Contato {{ $club?->name ?? config('landing.brand.name') }}">
+                            <img src="{{ is_custom_media_path(config('landing.images.contact')) ? landing_image('contact') : club_contact_image_url($club) }}" alt="Contato {{ $club?->name ?? config('landing.brand.name') }}">
                         </figure>
                     </div>
                 </div>
@@ -27,8 +27,8 @@
             <div class="col-xl-6">
                 <div class="contact-us-form">
                     <div class="contact-form-content">
-                        <h2 class="wow fadeInUp">Preencha o formulário</h2>
-                        <p class="wow fadeInUp" data-wow-delay="0.2s">Nossa equipe analisa sua mensagem e retorna em até 24 horas úteis.</p>
+                        <h2 class="wow fadeInUp">{{ landing_section('page_contact', 'form_title') }}</h2>
+                        <p class="wow fadeInUp" data-wow-delay="0.2s">{{ landing_section('page_contact', 'form_subtitle') }}</p>
                     </div>
 
                     <div class="contact-form">
@@ -81,9 +81,9 @@
         <div class="row section-row">
             <div class="col-lg-12">
                 <div class="section-title section-title-center">
-                    <span class="section-sub-title wow fadeInUp">Nossa Localização</span>
-                    <h2 class="text-anime-style-3" data-cursor="-opaque">Onde o treino encontra a oportunidade</h2>
-                    <p class="wow fadeInUp" data-wow-delay="0.2s">Visite nossa estrutura, conheça a equipe técnica e descubra o programa ideal para você ou seu atleta.</p>
+                    <span class="section-sub-title wow fadeInUp">{{ landing_section('page_contact', 'map_subtitle') }}</span>
+                    <h2 class="text-anime-style-3" data-cursor="-opaque">{{ landing_section('page_contact', 'map_title') }}</h2>
+                    <p class="wow fadeInUp" data-wow-delay="0.2s">{{ landing_section('page_contact', 'map_description') }}</p>
                 </div>
             </div>
         </div>

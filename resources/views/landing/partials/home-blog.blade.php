@@ -69,8 +69,8 @@
         <div class="row section-row">
             <div class="col-lg-12">
                 <div class="section-title section-title-center">
-                    <span class="section-sub-title wow fadeInUp">Últimas Notícias</span>
-                    <h2 class="text-anime-style-3" data-cursor="-opaque">Treinos, estratégias e destaques dos nossos atletas</h2>
+                    <span class="section-sub-title wow fadeInUp">{{ landing_section('home_blog', 'subtitle', '', $stats ?? null, $club ?? null) }}</span>
+                    <h2 class="text-anime-style-3" data-cursor="-opaque">{{ landing_section('home_blog', 'title', '', $stats ?? null, $club ?? null) }}</h2>
                 </div>
             </div>
         </div>

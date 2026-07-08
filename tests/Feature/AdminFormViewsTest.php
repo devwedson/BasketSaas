@@ -72,6 +72,7 @@ class AdminFormViewsTest extends TestCase
             'trainings.create',
             'games.create',
             'sponsors.create',
+            'landing.settings.edit',
         ];
 
         foreach ($routes as $route) {
