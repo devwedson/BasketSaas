@@ -1,4 +1,4 @@
-<header class="main-header">
+<header class="main-header active-sticky-header">
     <div class="header-sticky bg-section">
         <nav class="navbar navbar-expand-lg">
             <div class="container">
@@ -12,8 +12,9 @@
                             @foreach (config('landing.menu', []) as $item)
                                 @if (Route::has($item['route']))
                                     <li class="nav-item">
-                                        <a class="nav-link {{ ($currentRoute ?? '') === $item['route'] ? 'active' : '' }}"
-                                           href="{{ route($item['route']) }}">
+                                        <a class="nav-link {{ request()->routeIs($item['route']) ? 'active' : '' }}"
+                                           href="{{ route($item['route']) }}"
+                                           @if(request()->routeIs($item['route'])) aria-current="page" @endif>
                                             {{ $item['label'] }}
                                         </a>
                                     </li>
