@@ -10,7 +10,13 @@
         </a>
     @endif
     @if (!empty($deleteUrl))
-        <form method="POST" action="{{ $deleteUrl }}" class="inline" onsubmit="return confirm('{{ $deleteConfirm ?? 'Confirma a exclusão deste registro?' }}')">
+        <form
+            method="POST"
+            action="{{ $deleteUrl }}"
+            class="inline js-confirm-delete"
+            data-confirm-title="{{ $deleteTitle ?? 'Excluir registro?' }}"
+            data-confirm-message="{{ $deleteConfirm ?? 'Esta ação não pode ser desfeita. Deseja continuar?' }}"
+        >
             @csrf
             @method('DELETE')
             <button type="submit" class="btn btn-sm bg-danger/10 text-danger" title="Excluir">
