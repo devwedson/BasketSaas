@@ -17,6 +17,7 @@ class StaffInscriptionService
     public function __construct(
         private PaymentSettingsService $paymentSettings,
         private MercadoPagoService $mercadoPago,
+        private InscriptionReceiptService $receipts,
     ) {}
 
     public function shouldChargeInscription(): bool
@@ -105,6 +106,8 @@ class StaffInscriptionService
                     'transaction_date' => now()->toDateString(),
                 ]
             );
+
+            $this->receipts->generate($payment->fresh());
         });
     }
 
@@ -127,6 +130,19 @@ class StaffInscriptionService
             ->where('user_id', $user->id)
             ->whereIn('status', [PaymentStatus::Pending, PaymentStatus::Rejected])
             ->latest()
+            ->first();
+    }
+
+    public function approvedPaymentForUser(User $user): ?InscriptionPayment
+    {
+        if (! $user->hasRole(UserRole::Coach, UserRole::Assistant)) {
+            return null;
+        }
+
+        return InscriptionPayment::query()
+            ->where('user_id', $user->id)
+            ->where('status', PaymentStatus::Approved)
+            ->latest('paid_at')
             ->first();
     }
 

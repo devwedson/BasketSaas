@@ -12,6 +12,7 @@ use App\Models\Staff;
 use App\Models\User;
 use App\Services\StaffInscriptionService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class InscriptionPaymentTest extends TestCase
@@ -94,6 +95,143 @@ class InscriptionPaymentTest extends TestCase
 
         $this->actingAs($user)
             ->get(route('dashboard'))
+            ->assertOk();
+    }
+
+    public function test_receipt_is_generated_when_payment_is_approved(): void
+    {
+        Storage::fake('public');
+
+        $club = Club::query()->create([
+            'name' => 'Clube Teste',
+            'slug' => 'clube-teste',
+            'is_active' => true,
+        ]);
+
+        $user = User::factory()->create([
+            'role' => UserRole::Coach,
+            'club_id' => $club->id,
+            'is_active' => false,
+            'email_verified_at' => now(),
+        ]);
+
+        $staff = Staff::query()->create([
+            'club_id' => $club->id,
+            'user_id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => StaffRole::Coach,
+            'is_active' => true,
+        ]);
+
+        $this->seedPaymentSettings();
+
+        $payment = InscriptionPayment::query()->create([
+            'club_id' => $club->id,
+            'staff_id' => $staff->id,
+            'user_id' => $user->id,
+            'amount' => 150,
+            'status' => PaymentStatus::Pending,
+        ]);
+
+        app(StaffInscriptionService::class)->markApproved($payment, 'MP-123456');
+
+        $payment->refresh();
+
+        $this->assertNotNull($payment->receipt_path);
+        Storage::disk('public')->assertExists($payment->receipt_path);
+    }
+
+    public function test_user_can_view_own_inscription_receipt(): void
+    {
+        Storage::fake('public');
+
+        $club = Club::query()->create([
+            'name' => 'Clube Teste',
+            'slug' => 'clube-teste',
+            'is_active' => true,
+        ]);
+
+        $user = User::factory()->create([
+            'role' => UserRole::Coach,
+            'club_id' => $club->id,
+            'is_active' => true,
+            'email_verified_at' => now(),
+        ]);
+
+        $staff = Staff::query()->create([
+            'club_id' => $club->id,
+            'user_id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => StaffRole::Coach,
+            'is_active' => true,
+        ]);
+
+        $this->seedPaymentSettings();
+
+        $payment = InscriptionPayment::query()->create([
+            'club_id' => $club->id,
+            'staff_id' => $staff->id,
+            'user_id' => $user->id,
+            'amount' => 150,
+            'status' => PaymentStatus::Pending,
+        ]);
+
+        app(StaffInscriptionService::class)->markApproved($payment, 'MP-123456');
+        $payment->refresh();
+
+        $this->actingAs($user)
+            ->get(route('inscription.payments.receipt', $payment))
+            ->assertOk();
+    }
+
+    public function test_admin_can_view_staff_inscription_receipt(): void
+    {
+        Storage::fake('public');
+
+        $club = Club::query()->create([
+            'name' => 'Clube Teste',
+            'slug' => 'clube-teste',
+            'is_active' => true,
+        ]);
+
+        $coach = User::factory()->create([
+            'role' => UserRole::Coach,
+            'club_id' => $club->id,
+            'is_active' => true,
+            'email_verified_at' => now(),
+        ]);
+
+        $admin = User::factory()->create([
+            'role' => UserRole::SuperAdmin,
+            'email_verified_at' => now(),
+        ]);
+
+        $staff = Staff::query()->create([
+            'club_id' => $club->id,
+            'user_id' => $coach->id,
+            'name' => $coach->name,
+            'email' => $coach->email,
+            'role' => StaffRole::Coach,
+            'is_active' => true,
+        ]);
+
+        $this->seedPaymentSettings();
+
+        $payment = InscriptionPayment::query()->create([
+            'club_id' => $club->id,
+            'staff_id' => $staff->id,
+            'user_id' => $coach->id,
+            'amount' => 150,
+            'status' => PaymentStatus::Pending,
+        ]);
+
+        app(StaffInscriptionService::class)->markApproved($payment);
+        $payment->refresh();
+
+        $this->actingAs($admin)
+            ->get(route('inscription.payments.receipt', $payment))
             ->assertOk();
     }
 

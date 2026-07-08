@@ -22,6 +22,24 @@
     @include('partials.attex.stat-card', ['label' => 'Próximos Jogos', 'value' => $stats['games'], 'icon' => 'ri-trophy-line'])
 </div>
 
+@if ($inscriptionPayment)
+<div class="card mb-6 border border-success/20">
+    <div class="card-header flex justify-between items-center">
+        <h4 class="card-title">Inscrição paga</h4>
+        <span class="text-xs font-medium text-success">Confirmada</span>
+    </div>
+    <div class="p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Pagamento de R$ {{ number_format($inscriptionPayment->amount, 2, ',', '.') }} em {{ $inscriptionPayment->paid_at?->format('d/m/Y H:i') ?? '—' }}</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300 mt-1">Seu comprovante fica disponível aqui para consulta a qualquer momento.</p>
+        </div>
+        <a href="{{ route('inscription.payments.receipt', $inscriptionPayment) }}" target="_blank" rel="noopener" class="btn btn-sm bg-success text-white">
+            <i class="ri-file-pdf-line me-1"></i> Ver comprovante
+        </a>
+    </div>
+</div>
+@endif
+
 <div class="card mb-6">
     <div class="card-header flex justify-between items-center">
         <h4 class="card-title">Acesso Rápido</h4>

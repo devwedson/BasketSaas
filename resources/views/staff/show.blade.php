@@ -29,8 +29,22 @@
                     'label' => 'Inscrição',
                     'value' => $staff->latestInscriptionPayment->status->label().' — R$ '.number_format($staff->latestInscriptionPayment->amount, 2, ',', '.'),
                 ])
+                @if ($staff->latestInscriptionPayment->paid_at)
+                    @include('partials.attex.detail-item', [
+                        'label' => 'Pago em',
+                        'value' => $staff->latestInscriptionPayment->paid_at->format('d/m/Y H:i'),
+                    ])
+                @endif
             @endif
         </dl>
+
+        @if ($staff->latestInscriptionPayment?->isPaid())
+            <div class="mt-6">
+                <a href="{{ route('inscription.payments.receipt', $staff->latestInscriptionPayment) }}" target="_blank" rel="noopener" class="btn btn-sm bg-success text-white">
+                    <i class="ri-file-pdf-line me-1"></i> Ver comprovante de inscrição
+                </a>
+            </div>
+        @endif
 
         @if ($inscriptionEnabled && $staff->email)
             <div class="mt-6 flex flex-wrap gap-2">

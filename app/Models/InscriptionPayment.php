@@ -21,6 +21,7 @@ class InscriptionPayment extends Model
         'paid_at',
         'expires_at',
         'metadata',
+        'receipt_path',
     ];
 
     protected function casts(): array
@@ -63,5 +64,10 @@ class InscriptionPayment extends Model
     {
         return $this->status === PaymentStatus::Expired
             || ($this->expires_at && $this->expires_at->isPast() && $this->isPending());
+    }
+
+    public function hasReceipt(): bool
+    {
+        return filled($this->receipt_path);
     }
 }

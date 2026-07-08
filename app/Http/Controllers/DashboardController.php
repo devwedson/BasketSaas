@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserRole;
 use App\Models\Club;
 use App\Models\Game;
 use App\Models\Player;
 use App\Models\Team;
 use App\Models\Training;
+use App\Services\StaffInscriptionService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
+    public function __construct(private StaffInscriptionService $inscriptions) {}
+
     public function index(Request $request): View
     {
         $user = $request->user();
@@ -45,7 +49,11 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
-        return view('dashboard.index', compact('stats', 'upcomingTrainings', 'upcomingGames'));
+        $inscriptionPayment = $user->hasRole(UserRole::Coach, UserRole::Assistant)
+            ? $this->inscriptions->approvedPaymentForUser($user)
+            : null;
+
+        return view('dashboard.index', compact('stats', 'upcomingTrainings', 'upcomingGames', 'inscriptionPayment'));
     }
 
     private function countForClub($query, ?int $clubId): int

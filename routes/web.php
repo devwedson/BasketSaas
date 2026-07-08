@@ -62,6 +62,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/inscricao/pendente', [InscriptionPaymentController::class, 'pending'])->name('inscription.pending');
 
         Route::middleware('inscription.paid')->group(function () {
+        Route::get('/inscricao/comprovante', [InscriptionPaymentController::class, 'latestReceipt'])->name('inscription.receipt');
+        Route::get('/inscricao/pagamentos/{payment}/comprovante', [InscriptionPaymentController::class, 'showReceipt'])->name('inscription.payments.receipt');
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         Route::middleware('role:super_admin')->group(function () {
