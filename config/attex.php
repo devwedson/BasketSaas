@@ -4,7 +4,6 @@ return [
 
     'assets' => [
         'prefix' => env('ATTEX_ASSETS_PATH', 'attex'),
-        'template_path' => env('ATTEX_TEMPLATE_PATH', base_path('attex/tailwind/layouts')),
     ],
 
     'brand' => [

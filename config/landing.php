@@ -4,7 +4,6 @@ return [
 
     'assets' => [
         'prefix' => env('NEODUNK_ASSETS_PATH', 'neodunk'),
-        'template_path' => env('NEODUNK_TEMPLATE_PATH', base_path('neodunk')),
     ],
 
     'brand' => [
