@@ -33,4 +33,13 @@ class ExampleTest extends TestCase
             $this->get($uri)->assertOk();
         }
     }
+
+    public function test_team_show_page_renders_for_seeded_team(): void
+    {
+        $this->seed(\Database\Seeders\DatabaseSeeder::class);
+
+        $team = \App\Models\Team::query()->where('is_active', true)->firstOrFail();
+
+        $this->get(route('landing.team.show', $team))->assertOk();
+    }
 }

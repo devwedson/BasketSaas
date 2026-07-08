@@ -26,6 +26,7 @@ Route::controller(LandingController::class)->group(function () {
     Route::get('/programas', 'programs')->name('landing.programs');
     Route::get('/jogos', 'matches')->name('landing.matches');
     Route::get('/equipe', 'team')->name('landing.team');
+    Route::get('/equipe/{team}', 'teamShow')->name('landing.team.show');
     Route::get('/blog', 'blog')->name('landing.blog');
     Route::get('/faq', 'faqs')->name('landing.faqs');
 });

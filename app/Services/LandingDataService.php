@@ -46,16 +46,48 @@ class LandingDataService
         ];
     }
 
-    public function teams(?Club $club, int $limit = 8): Collection
+    public function teams(?Club $club, ?int $limit = 8): Collection
     {
         if (! $club) {
             return collect();
         }
 
-        return Team::query()
+        $query = Team::query()
             ->where('club_id', $club->id)
             ->where('is_active', true)
-            ->withCount('players')
+            ->withCount(['players' => fn ($query) => $query->where('is_active', true)])
+            ->orderBy('name');
+
+        if ($limit !== null) {
+            $query->limit($limit);
+        }
+
+        return $query->get();
+    }
+
+    public function teamForClub(?Club $club, Team $team): ?Team
+    {
+        if (! $club || $team->club_id !== $club->id || ! $team->is_active) {
+            return null;
+        }
+
+        return $team->loadCount(['players' => fn ($query) => $query->where('is_active', true)]);
+    }
+
+    public function playersForTeam(Team $team): Collection
+    {
+        return Player::query()
+            ->where('team_id', $team->id)
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get();
+    }
+
+    public function staffForTeam(Team $team, int $limit = 8): Collection
+    {
+        return Staff::query()
+            ->where('team_id', $team->id)
+            ->where('is_active', true)
             ->orderBy('name')
             ->limit($limit)
             ->get();

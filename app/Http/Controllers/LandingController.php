@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Team;
 use App\Services\LandingDataService;
 use Illuminate\View\View;
 
@@ -79,11 +80,27 @@ class LandingController extends Controller
         $club = $this->landing->featuredClub();
 
         return view('landing.team', [
-            'pageTitle' => 'Equipe',
+            'pageTitle' => 'Equipes',
             'currentRoute' => 'landing.team',
             'club' => $club,
-            'players' => $this->landing->players($club),
-            'staff' => $this->landing->staff($club),
+            'teams' => $this->landing->teams($club, limit: null),
+        ]);
+    }
+
+    public function teamShow(Team $team): View
+    {
+        $club = $this->landing->featuredClub();
+        $team = $this->landing->teamForClub($club, $team);
+
+        abort_if(! $team, 404);
+
+        return view('landing.team-show', [
+            'pageTitle' => $team->name,
+            'currentRoute' => 'landing.team',
+            'club' => $club,
+            'team' => $team,
+            'players' => $this->landing->playersForTeam($team),
+            'staff' => $this->landing->staffForTeam($team),
         ]);
     }
 

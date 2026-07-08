@@ -106,7 +106,7 @@ return [
         ['label' => 'Sobre', 'route' => 'landing.about'],
         ['label' => 'Programas', 'route' => 'landing.programs'],
         ['label' => 'Jogos', 'route' => 'landing.matches'],
-        ['label' => 'Equipe', 'route' => 'landing.team'],
+        ['label' => 'Equipes', 'route' => 'landing.team'],
         ['label' => 'Notícias', 'route' => 'landing.blog'],
         ['label' => 'FAQ', 'route' => 'landing.faqs'],
         ['label' => 'Contato', 'route' => 'landing.contact'],
@@ -141,7 +141,7 @@ return [
         'team' => [
             'file' => 'team',
             'route' => 'landing.team',
-            'title' => 'Equipe',
+            'title' => 'Equipes',
         ],
         'blog' => [
             'file' => 'blog',
