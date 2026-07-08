@@ -11,6 +11,10 @@
     ];
     $fieldLabels = [
         'header_title' => 'Título do cabeçalho',
+        'upcoming_subtitle' => 'Próximos jogos — subtítulo',
+        'upcoming_title' => 'Próximos jogos — título',
+        'recent_subtitle' => 'Resultados — subtítulo',
+        'recent_title' => 'Resultados — título',
         'subtitle' => 'Subtítulo',
         'title' => 'Título',
         'description' => 'Descrição',

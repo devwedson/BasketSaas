@@ -100,6 +100,10 @@ return [
     ],
     'page_matches' => [
         'header_title' => 'Jogos',
+        'upcoming_subtitle' => 'Próximos Jogos',
+        'upcoming_title' => 'Calendário da temporada',
+        'recent_subtitle' => 'Resultados',
+        'recent_title' => 'Destaques das partidas',
     ],
     'page_blog' => [
         'header_title' => 'Notícias',
