@@ -46,6 +46,12 @@
                         <span class="menu-text">SMTP / E-mail</span>
                     </a>
                 </li>
+                <li class="menu-item">
+                    <a href="{{ route('payment.settings.edit') }}" class="menu-link {{ request()->routeIs('payment.settings.*') ? 'active' : '' }}">
+                        <span class="menu-icon"><i class="ri-bank-card-line"></i></span>
+                        <span class="menu-text">Pagamentos</span>
+                    </a>
+                </li>
             @endif
 
             @if (auth()->user()->hasRole(\App\Enums\UserRole::SuperAdmin, \App\Enums\UserRole::Club))

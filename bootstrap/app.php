@@ -15,6 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => \App\Http\Middleware\EnsureUserHasRole::class,
             'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+            'inscription.paid' => \App\Http\Middleware\EnsureInscriptionPaid::class,
+        ]);
+
+        $middleware->validateCsrfTokens(except: [
+            'webhooks/mercadopago',
         ]);
 
         $middleware->redirectGuestsTo(fn () => route('login'));

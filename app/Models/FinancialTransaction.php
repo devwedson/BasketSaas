@@ -10,6 +10,8 @@ class FinancialTransaction extends Model
     protected $fillable = [
         'club_id',
         'player_id',
+        'staff_id',
+        'inscription_payment_id',
         'type',
         'category',
         'description',
@@ -33,5 +35,15 @@ class FinancialTransaction extends Model
     public function player(): BelongsTo
     {
         return $this->belongsTo(Player::class);
+    }
+
+    public function staff(): BelongsTo
+    {
+        return $this->belongsTo(Staff::class);
+    }
+
+    public function inscriptionPayment(): BelongsTo
+    {
+        return $this->belongsTo(InscriptionPayment::class);
     }
 }

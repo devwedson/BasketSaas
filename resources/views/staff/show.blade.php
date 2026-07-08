@@ -23,7 +23,26 @@
             @include('partials.attex.detail-item', ['label' => 'E-mail', 'value' => $staff->email])
             @include('partials.attex.detail-item', ['label' => 'Telefone', 'value' => $staff->phone])
             @include('partials.attex.detail-item', ['label' => 'Status', 'value' => $staff->is_active ? 'Ativo' : 'Inativo'])
+            @include('partials.attex.detail-item', ['label' => 'Acesso ao painel', 'value' => $staff->user_id ? 'Criado ('.$staff->user?->email.')' : 'Não criado'])
+            @if ($staff->latestInscriptionPayment)
+                @include('partials.attex.detail-item', [
+                    'label' => 'Inscrição',
+                    'value' => $staff->latestInscriptionPayment->status->label().' — R$ '.number_format($staff->latestInscriptionPayment->amount, 2, ',', '.'),
+                ])
+            @endif
         </dl>
+
+        @if ($inscriptionEnabled && $staff->email)
+            <div class="mt-6 flex flex-wrap gap-2">
+                <form method="POST" action="{{ route('staff.provision-access', $staff) }}">
+                    @csrf
+                    <button type="submit" class="btn btn-sm bg-primary text-white">
+                        <i class="ri-bank-card-line me-1"></i>
+                        {{ $staff->user_id ? 'Gerar nova cobrança de inscrição' : 'Criar acesso e cobrança' }}
+                    </button>
+                </form>
+            </div>
+        @endif
     </div>
 </div>
 @endsection

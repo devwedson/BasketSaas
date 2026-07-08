@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Services\StaffInscriptionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,6 +11,8 @@ use Illuminate\View\View;
 
 class LoginController extends Controller
 {
+    public function __construct(private StaffInscriptionService $inscriptions) {}
+
     public function create(): View
     {
         return view('auth.login');
@@ -44,6 +47,10 @@ class LoginController extends Controller
 
         if (! $user->hasVerifiedEmail()) {
             return redirect()->route('verification.notice');
+        }
+
+        if (! $this->inscriptions->hasPaidInscription($user)) {
+            return redirect()->route('inscription.checkout');
         }
 
         return redirect()->intended(route('dashboard'));

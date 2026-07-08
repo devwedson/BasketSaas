@@ -6,6 +6,7 @@ use App\Enums\StaffRole;
 use App\Http\Controllers\Concerns\ScopesByClub;
 use App\Models\Staff;
 use App\Models\Team;
+use App\Services\StaffInscriptionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -15,14 +16,19 @@ class StaffController extends Controller
 {
     use ScopesByClub;
 
+    public function __construct(private StaffInscriptionService $inscriptions) {}
+
     public function index(Request $request): View
     {
         $staffMembers = $this->scopeByClub(
-            Staff::query()->with(['team', 'club'])->latest(),
+            Staff::query()->with(['team', 'club', 'latestInscriptionPayment'])->latest(),
             $request
         )->paginate(10);
 
-        return view('staff.index', ['staffMembers' => $staffMembers]);
+        return view('staff.index', [
+            'staffMembers' => $staffMembers,
+            'inscriptionEnabled' => $this->inscriptions->shouldChargeInscription(),
+        ]);
     }
 
     public function create(Request $request): View
@@ -31,6 +37,7 @@ class StaffController extends Controller
             'clubs' => $this->clubsForSelect($request),
             'teams' => $this->teamsForForm($request),
             'roles' => StaffRole::cases(),
+            'inscriptionEnabled' => $this->inscriptions->shouldChargeInscription(),
         ]);
     }
 
@@ -42,17 +49,24 @@ class StaffController extends Controller
             $data['photo'] = $request->file('photo')->store('staff/photos', 'public');
         }
 
-        Staff::create($data);
+        $staff = Staff::create($data);
 
-        return redirect()->route('staff.index')->with('success', 'Membro da comissão cadastrado com sucesso.');
+        return $this->redirectAfterSave(
+            $request,
+            $staff,
+            'Membro da comissão cadastrado com sucesso.'
+        );
     }
 
     public function show(Request $request, Staff $staff): View
     {
         $this->authorizeClubAccess($request, $staff->club_id);
-        $staff->load(['team', 'club']);
+        $staff->load(['team', 'club', 'user', 'latestInscriptionPayment']);
 
-        return view('staff.show', compact('staff'));
+        return view('staff.show', [
+            'staff' => $staff,
+            'inscriptionEnabled' => $this->inscriptions->shouldChargeInscription(),
+        ]);
     }
 
     public function edit(Request $request, Staff $staff): View
@@ -64,6 +78,7 @@ class StaffController extends Controller
             'clubs' => $this->clubsForSelect($request),
             'teams' => $this->teamsForForm($request, $staff->club_id),
             'roles' => StaffRole::cases(),
+            'inscriptionEnabled' => $this->inscriptions->shouldChargeInscription(),
         ]);
     }
 
@@ -79,7 +94,29 @@ class StaffController extends Controller
 
         $staff->update($data);
 
-        return redirect()->route('staff.show', $staff)->with('success', 'Membro da comissão atualizado com sucesso.');
+        return $this->redirectAfterSave(
+            $request,
+            $staff,
+            'Membro da comissão atualizado com sucesso.',
+            route('staff.show', $staff)
+        );
+    }
+
+    public function provisionAccess(Request $request, Staff $staff): RedirectResponse
+    {
+        $this->authorizeClubAccess($request, $staff->club_id);
+
+        $result = $this->inscriptions->provisionAccess($staff, forceNewPayment: true);
+
+        $message = 'Acesso e cobrança de inscrição gerados com sucesso.';
+
+        if (! empty($result['plain_password'])) {
+            $message .= ' Senha temporária: '.$result['plain_password'];
+        }
+
+        return redirect()
+            ->route('staff.show', $staff)
+            ->with('success', $message);
     }
 
     public function destroy(Request $request, Staff $staff): RedirectResponse
@@ -90,17 +127,45 @@ class StaffController extends Controller
         return redirect()->route('staff.index')->with('success', 'Membro da comissão removido com sucesso.');
     }
 
+    private function redirectAfterSave(
+        Request $request,
+        Staff $staff,
+        string $baseMessage,
+        ?string $redirectTo = null
+    ): RedirectResponse {
+        $message = $baseMessage;
+
+        if ($request->boolean('create_panel_access')) {
+            $result = $this->inscriptions->provisionAccess($staff);
+            $message .= ' Acesso ao painel criado com cobrança de inscrição pendente.';
+
+            if (! empty($result['plain_password'])) {
+                $message .= ' Senha temporária: '.$result['plain_password'];
+            }
+        }
+
+        return redirect()
+            ->to($redirectTo ?? route('staff.index'))
+            ->with('success', $message);
+    }
+
     private function validatedData(Request $request, ?Staff $staff = null): array
     {
         $data = $request->validate([
             'club_id' => ['nullable', 'exists:clubs,id'],
             'team_id' => ['nullable', 'exists:teams,id'],
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['nullable', 'email', 'max:255'],
+            'email' => [
+                Rule::requiredIf($request->boolean('create_panel_access')),
+                'nullable',
+                'email',
+                'max:255',
+            ],
             'phone' => ['nullable', 'string', 'max:30'],
             'role' => ['required', Rule::enum(StaffRole::class)],
             'photo' => ['nullable', 'image', 'max:2048'],
             'is_active' => ['nullable', 'boolean'],
+            'create_panel_access' => ['nullable', 'boolean'],
         ]);
 
         $clubId = $this->resolveClubId($request, $data['club_id'] ?? $staff?->club_id);

@@ -9,8 +9,11 @@ use App\Http\Controllers\ClubController;
 use App\Http\Controllers\ClubSettingsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\InscriptionPaymentController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\LandingSettingsController;
+use App\Http\Controllers\MercadoPagoWebhookController;
+use App\Http\Controllers\PaymentSettingsController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SponsorController;
@@ -18,6 +21,9 @@ use App\Http\Controllers\StaffController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TrainingController;
 use Illuminate\Support\Facades\Route;
+
+Route::post('/webhooks/mercadopago', [MercadoPagoWebhookController::class, 'handle'])
+    ->name('webhooks.mercadopago');
 
 Route::controller(LandingController::class)->group(function () {
     Route::get('/', 'index')->name('landing');
@@ -50,6 +56,12 @@ Route::middleware('auth')->group(function () {
         ->name('verification.resend');
 
     Route::middleware('verified')->group(function () {
+        Route::get('/inscricao', [InscriptionPaymentController::class, 'checkout'])->name('inscription.checkout');
+        Route::get('/inscricao/sucesso', [InscriptionPaymentController::class, 'success'])->name('inscription.success');
+        Route::get('/inscricao/falha', [InscriptionPaymentController::class, 'failure'])->name('inscription.failure');
+        Route::get('/inscricao/pendente', [InscriptionPaymentController::class, 'pending'])->name('inscription.pending');
+
+        Route::middleware('inscription.paid')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         Route::middleware('role:super_admin')->group(function () {
@@ -61,6 +73,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/configuracoes/smtp/preview/ativacao/frame', [SmtpSettingsController::class, 'previewActivationFrame'])->name('smtp.settings.preview.activation.frame'); // iframe
             Route::get('/configuracoes/landing', [LandingSettingsController::class, 'edit'])->name('landing.settings.edit');
             Route::put('/configuracoes/landing', [LandingSettingsController::class, 'update'])->name('landing.settings.update');
+            Route::get('/configuracoes/pagamentos', [PaymentSettingsController::class, 'edit'])->name('payment.settings.edit');
+            Route::put('/configuracoes/pagamentos', [PaymentSettingsController::class, 'update'])->name('payment.settings.update');
         });
 
         Route::middleware('role:club')->group(function () {
@@ -76,6 +90,7 @@ Route::middleware('auth')->group(function () {
             Route::resource('teams', TeamController::class);
             Route::resource('players', PlayerController::class);
             Route::resource('staff', StaffController::class);
+            Route::post('staff/{staff}/acesso', [StaffController::class, 'provisionAccess'])->name('staff.provision-access');
             Route::resource('trainings', TrainingController::class);
             Route::post('trainings/{training}/attendance', [TrainingController::class, 'attendance'])->name('trainings.attendance');
             Route::resource('games', GameController::class);
@@ -83,6 +98,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/calendario', [CalendarController::class, 'index'])->name('calendar.index');
             Route::get('/relatorios', [ReportController::class, 'index'])->name('reports.index');
             Route::get('/relatorios/{type}/{format}', [ReportController::class, 'export'])->name('reports.export');
+        });
         });
     });
 });

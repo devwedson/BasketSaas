@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Enums\StaffRole;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Staff extends Model
 {
@@ -43,5 +45,15 @@ class Staff extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function inscriptionPayments(): HasMany
+    {
+        return $this->hasMany(InscriptionPayment::class);
+    }
+
+    public function latestInscriptionPayment(): HasOne
+    {
+        return $this->hasOne(InscriptionPayment::class)->latestOfMany();
     }
 }

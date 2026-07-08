@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Services\LandingDataService;
 use App\Services\LandingSettingsService;
+use App\Services\PaymentSettingsService;
 use App\Services\SmtpSettingsService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Schema;
@@ -31,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
             if (Schema::hasTable('settings')) {
                 app(SmtpSettingsService::class)->applyToConfig();
                 app(LandingSettingsService::class)->applyToConfig();
+                app(PaymentSettingsService::class)->applyToConfig();
             }
         } catch (\Throwable) {
             // Ignora falha de conexão durante migrate, cache:clear, etc.
