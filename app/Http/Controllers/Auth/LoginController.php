@@ -37,16 +37,20 @@ class LoginController extends Controller
 
         $user = Auth::user();
 
+        if (! $user->hasVerifiedEmail()) {
+            return redirect()->route('verification.notice');
+        }
+
         if (! $user->is_active) {
+            if (! $this->inscriptions->hasPaidInscription($user)) {
+                return redirect()->route('inscription.checkout');
+            }
+
             Auth::logout();
 
             return back()
                 ->withInput($request->only('email'))
-                ->withErrors(['email' => 'Usuário inativo.']);
-        }
-
-        if (! $user->hasVerifiedEmail()) {
-            return redirect()->route('verification.notice');
+                ->withErrors(['email' => 'Usuário inativo. Entre em contato com o administrador.']);
         }
 
         if (! $this->inscriptions->hasPaidInscription($user)) {

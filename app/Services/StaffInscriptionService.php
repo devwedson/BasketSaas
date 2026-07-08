@@ -18,6 +18,7 @@ class StaffInscriptionService
         private PaymentSettingsService $paymentSettings,
         private MercadoPagoService $mercadoPago,
         private InscriptionReceiptService $receipts,
+        private SmtpSettingsService $smtp,
     ) {}
 
     public function shouldChargeInscription(): bool
@@ -212,8 +213,11 @@ class StaffInscriptionService
             'club_id' => $staff->club_id,
             'phone' => $staff->phone,
             'is_active' => ! $this->paymentSettings->inscriptionRequired(),
-            'email_verified_at' => now(),
         ]);
+
+        if ($this->smtp->isConfigured()) {
+            $user->sendEmailVerificationNotification();
+        }
 
         return [$user, $password];
     }
