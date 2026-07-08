@@ -163,25 +163,4 @@ return [
         ],
     ],
 
-    'html_routes' => [
-        'index.html' => 'landing',
-        'index-2.html' => 'landing',
-        'index-3.html' => 'landing',
-        'index-4.html' => 'landing',
-        'about.html' => 'landing.about',
-        'contact.html' => 'landing.contact',
-        'programs.html' => 'landing.programs',
-        'matches.html' => 'landing.matches',
-        'team.html' => 'landing.team',
-        'blog.html' => 'landing.blog',
-        'faqs.html' => 'landing.faqs',
-        'program-single.html' => 'landing.programs',
-        'blog-single.html' => 'landing.blog',
-        'match-single.html' => 'landing.matches',
-        'team-single.html' => 'landing.team',
-        'testimonials.html' => 'landing.about',
-        'image-gallery.html' => 'landing.about',
-        'video-gallery.html' => 'landing.about',
-    ],
-
 ];
