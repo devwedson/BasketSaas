@@ -1,10 +1,6 @@
 @php
-    $logoUrl = is_custom_media_path($settings['brand_logo'])
-        ? asset('storage/'.$settings['brand_logo'])
-        : neodunk_asset($settings['brand_logo']);
-    $faviconUrl = is_custom_media_path($settings['brand_favicon'])
-        ? asset('storage/'.$settings['brand_favicon'])
-        : neodunk_asset($settings['brand_favicon']);
+    $logoUrl = storage_or_asset($settings['brand_logo'], $settings['brand_logo']);
+    $faviconUrl = storage_or_asset($settings['brand_favicon'], $settings['brand_favicon']);
 @endphp
 
 <section>

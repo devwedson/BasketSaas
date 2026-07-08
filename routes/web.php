@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\PublicStorageController;
 use App\Http\Controllers\SmtpSettingsController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ClubController;
@@ -24,6 +25,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/webhooks/mercadopago', [MercadoPagoWebhookController::class, 'handle'])
     ->name('webhooks.mercadopago');
+
+Route::get('/storage/{path}', [PublicStorageController::class, 'show'])
+    ->where('path', '.*')
+    ->name('storage.fallback');
 
 Route::controller(LandingController::class)->group(function () {
     Route::get('/', 'index')->name('landing');

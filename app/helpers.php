@@ -38,8 +38,15 @@ if (! function_exists('landing_route')) {
     }
 }
 
-if (! function_exists('is_custom_media_path')) {
-    function is_custom_media_path(?string $path): bool
+if (! function_exists('normalize_upload_path')) {
+    function normalize_upload_path(?string $path): string
+    {
+        return ltrim(str_replace('\\', '/', (string) $path), '/');
+    }
+}
+
+if (! function_exists('is_panel_upload_path')) {
+    function is_panel_upload_path(?string $path): bool
     {
         if (blank($path)) {
             return false;
@@ -49,12 +56,55 @@ if (! function_exists('is_custom_media_path')) {
             return true;
         }
 
+        $path = normalize_upload_path($path);
+
         // Caminhos images/ são assets padrão do Neodunk (seed), não uploads do painel.
         if (str_starts_with($path, 'images/')) {
             return false;
         }
 
-        return Storage::disk('public')->exists($path);
+        foreach (['clubs/', 'teams/', 'players/', 'staff/', 'sponsors/', 'games/', 'landing/'] as $prefix) {
+            if (str_starts_with($path, $prefix)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
+if (! function_exists('public_upload_exists')) {
+    function public_upload_exists(?string $path): bool
+    {
+        if (blank($path)) {
+            return false;
+        }
+
+        $path = normalize_upload_path($path);
+
+        if (Storage::disk('public')->exists($path)) {
+            return true;
+        }
+
+        return is_file(storage_path('app/public/'.$path));
+    }
+}
+
+if (! function_exists('is_custom_media_path')) {
+    function is_custom_media_path(?string $path): bool
+    {
+        if (is_panel_upload_path($path)) {
+            return true;
+        }
+
+        return public_upload_exists($path);
+    }
+}
+
+if (! function_exists('public_upload_url')) {
+    function public_upload_url(string $path): string
+    {
+        return asset('storage/'.normalize_upload_path($path));
     }
 }
 
@@ -66,7 +116,7 @@ if (! function_exists('storage_or_asset')) {
                 return $path;
             }
 
-            return asset('storage/'.$path);
+            return public_upload_url($path);
         }
 
         return neodunk_asset($fallback);
@@ -155,13 +205,13 @@ if (! function_exists('landing_brand_logo_url')) {
         }
 
         if (is_custom_media_path($club?->logo)) {
-            return asset('storage/'.$club->logo);
+            return public_upload_url($club->logo);
         }
 
         $brandLogo = config('landing.brand.logo', 'images/logo.svg');
 
         if (is_custom_media_path($brandLogo)) {
-            return asset('storage/'.$brandLogo);
+            return public_upload_url($brandLogo);
         }
 
         return neodunk_asset($brandLogo);
@@ -176,13 +226,13 @@ if (! function_exists('landing_favicon_url')) {
         }
 
         if (is_custom_media_path($club?->logo)) {
-            return asset('storage/'.$club->logo);
+            return public_upload_url($club->logo);
         }
 
         $favicon = config('landing.brand.favicon', 'images/favicon.png');
 
         if (is_custom_media_path($favicon)) {
-            return asset('storage/'.$favicon);
+            return public_upload_url($favicon);
         }
 
         return neodunk_asset($favicon);

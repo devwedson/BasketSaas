@@ -28,6 +28,11 @@ class AppServiceProvider extends ServiceProvider
     {
         Carbon::setLocale(config('app.locale', 'pt_BR'));
 
+        $uploadRoot = public_path('storage');
+        if (! is_dir($uploadRoot)) {
+            mkdir($uploadRoot, 0755, true);
+        }
+
         try {
             if (Schema::hasTable('settings')) {
                 app(SmtpSettingsService::class)->applyToConfig();
