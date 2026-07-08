@@ -52,10 +52,12 @@ class PaymentSettingsService
         return $this->inscriptionRequired() && $settings['access_token'] !== '';
     }
 
-    public function save(array $data): void
+    public function save(array $data): float
     {
+        $amount = parse_brazilian_money($data['inscription_amount'] ?? 0);
+
         $this->put('payment.inscription_enabled', ! empty($data['inscription_enabled']) ? '1' : '0');
-        $this->put('payment.inscription_amount', (string) ($data['inscription_amount'] ?? 0));
+        $this->put('payment.inscription_amount', (string) $amount);
         $this->put('payment.inscription_description', $data['inscription_description'] ?? '');
         $this->put('mercadopago.public_key', $data['public_key'] ?? '');
         $this->put('mercadopago.sandbox', ! empty($data['sandbox']) ? '1' : '0');
@@ -63,6 +65,8 @@ class PaymentSettingsService
         if (! empty($data['access_token'])) {
             $this->put('mercadopago.access_token', Crypt::encryptString($data['access_token']));
         }
+
+        return $amount;
     }
 
     public function applyToConfig(): void

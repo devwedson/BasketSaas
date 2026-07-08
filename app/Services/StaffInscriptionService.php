@@ -172,6 +172,35 @@ class StaffInscriptionService
             ->first();
     }
 
+    public function syncPendingAmountsToSettings(): int
+    {
+        if (! $this->shouldChargeInscription()) {
+            return 0;
+        }
+
+        $amount = $this->paymentSettings->all()['inscription_amount'];
+        $updated = 0;
+
+        InscriptionPayment::query()
+            ->where('status', PaymentStatus::Pending)
+            ->get()
+            ->each(function (InscriptionPayment $payment) use ($amount, &$updated) {
+                if ((float) $payment->amount === (float) $amount) {
+                    return;
+                }
+
+                $payment->update(['amount' => $amount]);
+
+                if ($this->mercadoPago->isReady()) {
+                    $this->refreshPreference($payment);
+                }
+
+                $updated++;
+            });
+
+        return $updated;
+    }
+
     public function hasPaidInscription(User $user): bool
     {
         if (! $user->hasRole(UserRole::Coach, UserRole::Assistant)) {

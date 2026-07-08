@@ -24,10 +24,16 @@
             @include('partials.attex.detail-item', ['label' => 'Telefone', 'value' => $staff->phone])
             @include('partials.attex.detail-item', ['label' => 'Status', 'value' => $staff->is_active ? 'Ativo' : 'Inativo'])
             @include('partials.attex.detail-item', ['label' => 'Acesso ao painel', 'value' => $staff->user_id ? 'Criado ('.$staff->user?->email.')' : 'Não criado'])
+            @if ($inscriptionEnabled)
+                @include('partials.attex.detail-item', [
+                    'label' => 'Valor configurado',
+                    'value' => 'R$ '.format_brazilian_money($configuredInscriptionAmount),
+                ])
+            @endif
             @if ($staff->latestInscriptionPayment)
                 @include('partials.attex.detail-item', [
-                    'label' => 'Inscrição',
-                    'value' => $staff->latestInscriptionPayment->status->label().' — R$ '.number_format($staff->latestInscriptionPayment->amount, 2, ',', '.'),
+                    'label' => 'Cobrança atual',
+                    'value' => $staff->latestInscriptionPayment->status->label().' — R$ '.format_brazilian_money($staff->latestInscriptionPayment->amount),
                 ])
                 @if ($staff->latestInscriptionPayment->paid_at)
                     @include('partials.attex.detail-item', [
@@ -43,6 +49,17 @@
                 <a href="{{ route('inscription.payments.receipt', $staff->latestInscriptionPayment) }}" target="_blank" rel="noopener" class="btn btn-sm bg-success text-white">
                     <i class="ri-file-pdf-line me-1"></i> Ver comprovante de inscrição
                 </a>
+            </div>
+        @endif
+
+        @if (
+            $inscriptionEnabled
+            && $staff->latestInscriptionPayment?->isPending()
+            && (float) $staff->latestInscriptionPayment->amount !== (float) $configuredInscriptionAmount
+        )
+            <div class="mb-4 p-3 rounded-md bg-warning/10 text-warning text-sm">
+                A cobrança deste membro ainda está com o valor antigo (R$ {{ format_brazilian_money($staff->latestInscriptionPayment->amount) }}).
+                Salve novamente em Pagamentos ou clique em <strong>Gerar nova cobrança de inscrição</strong> para aplicar R$ {{ format_brazilian_money($configuredInscriptionAmount) }}.
             </div>
         @endif
 

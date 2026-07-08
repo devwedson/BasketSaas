@@ -37,6 +37,35 @@ if (! function_exists('landing_route')) {
     }
 }
 
+if (! function_exists('parse_brazilian_money')) {
+    function parse_brazilian_money(mixed $value): float
+    {
+        if (is_int($value) || is_float($value)) {
+            return (float) $value;
+        }
+
+        $normalized = trim((string) $value);
+
+        if ($normalized === '') {
+            return 0.0;
+        }
+
+        if (str_contains($normalized, ',')) {
+            $normalized = str_replace('.', '', $normalized);
+            $normalized = str_replace(',', '.', $normalized);
+        }
+
+        return (float) $normalized;
+    }
+}
+
+if (! function_exists('format_brazilian_money')) {
+    function format_brazilian_money(float|int|string|null $value): string
+    {
+        return number_format((float) $value, 2, ',', '.');
+    }
+}
+
 if (! function_exists('store_panel_upload')) {
     function store_panel_upload(\Illuminate\Http\UploadedFile $file, string $directory): string
     {

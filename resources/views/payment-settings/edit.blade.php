@@ -27,7 +27,8 @@
 
         <div>
             <label class="font-semibold text-gray-500 dark:text-gray-400 mb-2 block">Valor da inscrição (R$) *</label>
-            <input type="number" name="inscription_amount" class="form-input" min="1" step="0.01" value="{{ old('inscription_amount', $settings['inscription_amount']) }}">
+            <input type="text" name="inscription_amount" class="form-input" inputmode="decimal" placeholder="1.500,50" value="{{ old('inscription_amount', format_brazilian_money($settings['inscription_amount'])) }}" required>
+            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Use vírgula para centavos (ex.: 1.500,50). Cobranças pendentes são atualizadas ao salvar.</p>
         </div>
 
         <div>

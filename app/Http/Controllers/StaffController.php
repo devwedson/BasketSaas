@@ -63,9 +63,12 @@ class StaffController extends Controller
         $this->authorizeClubAccess($request, $staff->club_id);
         $staff->load(['team', 'club', 'user', 'latestInscriptionPayment']);
 
+        $configuredAmount = app(\App\Services\PaymentSettingsService::class)->all()['inscription_amount'];
+
         return view('staff.show', [
             'staff' => $staff,
             'inscriptionEnabled' => $this->inscriptions->shouldChargeInscription(),
+            'configuredInscriptionAmount' => $configuredAmount,
         ]);
     }
 
