@@ -19,9 +19,13 @@ class UploadStorageService
         }
     }
 
-    public function publishLegacyUploads(): int
+    public function publishLegacyUploads(bool $force = false): int
     {
         $this->ensureUploadRoot();
+
+        if ($force) {
+            $this->resetLegacyPublishedFlag();
+        }
 
         $legacyRoot = storage_path('app/public');
 
@@ -36,7 +40,7 @@ class UploadStorageService
         foreach (File::allFiles($legacyRoot) as $file) {
             $relativePath = str_replace('\\', '/', substr($file->getPathname(), strlen($legacyRoot) + 1));
 
-            if ($relativePath === '.gitignore' || Storage::disk('public')->exists($relativePath)) {
+            if ($relativePath === '.gitignore' || $this->absolutePathFor($relativePath, preferPublic: true) !== null) {
                 continue;
             }
 
@@ -46,20 +50,69 @@ class UploadStorageService
             $copied++;
         }
 
-        $this->markLegacyPublished();
+        if (! $this->hasUnpublishedLegacyFiles()) {
+            $this->markLegacyPublished();
+        }
 
         return $copied;
     }
 
     public function shouldPublishLegacyUploads(): bool
     {
-        if (! $this->legacyUploadsAvailable()) {
+        return $this->hasUnpublishedLegacyFiles();
+    }
+
+    public function hasUnpublishedLegacyFiles(): bool
+    {
+        $legacyRoot = storage_path('app/public');
+
+        if (! is_dir($legacyRoot)) {
             return false;
         }
 
-        return Setting::query()
-            ->where('key', self::LEGACY_PUBLISHED_KEY)
-            ->value('value') !== '1';
+        foreach (File::allFiles($legacyRoot) as $file) {
+            $relativePath = str_replace('\\', '/', substr($file->getPathname(), strlen($legacyRoot) + 1));
+
+            if ($relativePath === '.gitignore') {
+                continue;
+            }
+
+            if (! is_file(public_path('storage'.DIRECTORY_SEPARATOR.$relativePath))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function absolutePathFor(string $relativePath, bool $preferPublic = false): ?string
+    {
+        $relativePath = ltrim(str_replace('\\', '/', $relativePath), '/');
+
+        if ($relativePath === '' || str_contains($relativePath, '..')) {
+            return null;
+        }
+
+        $candidates = $preferPublic
+            ? [public_path('storage/'.$relativePath), storage_path('app/public/'.$relativePath)]
+            : [storage_path('app/public/'.$relativePath), public_path('storage/'.$relativePath)];
+
+        foreach ($candidates as $candidate) {
+            if (is_file($candidate)) {
+                return $candidate;
+            }
+        }
+
+        if (Storage::disk('public')->exists($relativePath)) {
+            return Storage::disk('public')->path($relativePath);
+        }
+
+        return null;
+    }
+
+    public function resetLegacyPublishedFlag(): void
+    {
+        Setting::query()->where('key', self::LEGACY_PUBLISHED_KEY)->delete();
     }
 
     public function legacyUploadsAvailable(): bool

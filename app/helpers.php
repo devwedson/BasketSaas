@@ -80,13 +80,7 @@ if (! function_exists('public_upload_exists')) {
             return false;
         }
 
-        $path = normalize_upload_path($path);
-
-        if (Storage::disk('public')->exists($path)) {
-            return true;
-        }
-
-        return is_file(storage_path('app/public/'.$path));
+        return app(\App\Services\UploadStorageService::class)->absolutePathFor($path) !== null;
     }
 }
 
@@ -104,7 +98,13 @@ if (! function_exists('is_custom_media_path')) {
 if (! function_exists('public_upload_url')) {
     function public_upload_url(string $path): string
     {
-        return asset('storage/'.normalize_upload_path($path));
+        $path = normalize_upload_path($path);
+
+        if (Route::has('media.show')) {
+            return route('media.show', ['path' => $path]);
+        }
+
+        return asset('storage/'.$path);
     }
 }
 

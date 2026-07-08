@@ -13,7 +13,7 @@
             </button>
         </form>
         <p class="text-sm text-gray-500 dark:text-gray-400 mb-0">
-            Publica arquivos antigos e garante a pasta <code class="text-xs">public/storage</code>.
+            Publica arquivos antigos, garante a pasta <code class="text-xs">public/storage</code> e corrige URLs das imagens.
         </p>
     </div>
 </div>

@@ -21,6 +21,13 @@ class MediaUploadTest extends TestCase
         $this->assertFalse(is_custom_media_path('images/logo.svg'));
     }
 
+    public function test_public_upload_url_uses_media_route(): void
+    {
+        $url = public_upload_url('clubs/logos/logo.png');
+
+        $this->assertStringContainsString('/midia/clubs/logos/logo.png', $url);
+    }
+
     public function test_public_disk_stores_files_under_public_storage(): void
     {
         Storage::fake('public');
@@ -40,6 +47,9 @@ class MediaUploadTest extends TestCase
 
         $legacyFile = $legacyDir.'/legacy.png';
         file_put_contents($legacyFile, 'legacy-logo');
+
+        $this->get('/midia/clubs/logos/legacy.png')
+            ->assertOk();
 
         $this->get('/storage/clubs/logos/legacy.png')
             ->assertOk();

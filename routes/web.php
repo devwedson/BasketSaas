@@ -27,6 +27,10 @@ use Illuminate\Support\Facades\Route;
 Route::post('/webhooks/mercadopago', [MercadoPagoWebhookController::class, 'handle'])
     ->name('webhooks.mercadopago');
 
+Route::get('/midia/{path}', [PublicStorageController::class, 'show'])
+    ->where('path', '.*')
+    ->name('media.show');
+
 Route::get('/storage/{path}', [PublicStorageController::class, 'show'])
     ->where('path', '.*')
     ->name('storage.fallback');

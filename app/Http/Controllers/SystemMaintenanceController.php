@@ -11,7 +11,7 @@ class SystemMaintenanceController extends Controller
     public function repairUploads(UploadStorageService $uploads): RedirectResponse
     {
         $uploads->ensureUploadRoot();
-        $copied = $uploads->publishLegacyUploads();
+        $copied = $uploads->publishLegacyUploads(force: true);
 
         try {
             Artisan::call('config:clear');
