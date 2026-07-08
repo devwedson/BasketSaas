@@ -1,0 +1,189 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
+if (! function_exists('neodunk_asset')) {
+    function neodunk_asset(string $path = ''): string
+    {
+        $prefix = trim(config('landing.assets.prefix', 'neodunk'), '/');
+
+        return $path === '' ? asset($prefix) : asset("{$prefix}/".ltrim($path, '/'));
+    }
+}
+
+if (! function_exists('attex_asset')) {
+    function attex_asset(string $path = ''): string
+    {
+        $prefix = trim(config('attex.assets.prefix', 'attex'), '/');
+
+        return $path === '' ? asset($prefix) : asset("{$prefix}/".ltrim($path, '/'));
+    }
+}
+
+if (! function_exists('page_title')) {
+    function page_title(?string $suffix = null): string
+    {
+        $name = config('landing.brand.name', config('app.name'));
+
+        return $suffix ? "{$suffix} | {$name}" : "{$name} — ".config('landing.brand.tagline');
+    }
+}
+
+if (! function_exists('landing_route')) {
+    function landing_route(string $routeName): string
+    {
+        return Route::has($routeName) ? route($routeName) : '#';
+    }
+}
+
+if (! function_exists('is_custom_media_path')) {
+    function is_custom_media_path(?string $path): bool
+    {
+        if (blank($path)) {
+            return false;
+        }
+
+        if (Str::startsWith($path, ['http://', 'https://'])) {
+            return true;
+        }
+
+        // Caminhos images/ são assets padrão do Neodunk (seed), não uploads do painel.
+        if (str_starts_with($path, 'images/')) {
+            return false;
+        }
+
+        return Storage::disk('public')->exists($path);
+    }
+}
+
+if (! function_exists('storage_or_asset')) {
+    function storage_or_asset(?string $path, string $fallback): string
+    {
+        if (is_custom_media_path($path)) {
+            if (Str::startsWith($path, ['http://', 'https://'])) {
+                return $path;
+            }
+
+            return asset('storage/'.$path);
+        }
+
+        return neodunk_asset($fallback);
+    }
+}
+
+if (! function_exists('club_logo_url')) {
+    function club_logo_url(?\App\Models\Club $club, string $fallback = 'images/logo.svg'): string
+    {
+        return storage_or_asset($club?->logo, $fallback);
+    }
+}
+
+if (! function_exists('team_logo_url')) {
+    function team_logo_url(?\App\Models\Team $team, string $fallback = 'images/team-logo-1.png'): string
+    {
+        return storage_or_asset($team?->logo, $fallback);
+    }
+}
+
+if (! function_exists('player_photo_url')) {
+    function player_photo_url(?\App\Models\Player $player, string $fallback = 'images/team-1.jpg'): string
+    {
+        return storage_or_asset($player?->photo, $fallback);
+    }
+}
+
+if (! function_exists('staff_photo_url')) {
+    function staff_photo_url(?\App\Models\Staff $staff, string $fallback = 'images/team-2.jpg'): string
+    {
+        return storage_or_asset($staff?->photo, $fallback);
+    }
+}
+
+if (! function_exists('game_opponent_logo_url')) {
+    function game_opponent_logo_url(?\App\Models\Game $game, string $fallback = 'images/team-logo-2.png'): string
+    {
+        return storage_or_asset($game?->opponent_logo, $fallback);
+    }
+}
+
+if (! function_exists('team_program_image_url')) {
+    function team_program_image_url(?\App\Models\Team $team, int $index = 0): string
+    {
+        return team_cover_image_url($team, $index);
+    }
+}
+
+if (! function_exists('team_cover_image_url')) {
+    function team_cover_image_url(?\App\Models\Team $team, int $index = 0): string
+    {
+        $fallback = 'images/program-image-'.(($index % 4) + 1).'.jpg';
+
+        return storage_or_asset($team?->cover_image, $fallback);
+    }
+}
+
+if (! function_exists('club_cover_image_url')) {
+    function club_cover_image_url(?\App\Models\Club $club, string $fallback = 'images/about-us-image-1.png'): string
+    {
+        return storage_or_asset($club?->cover_image, $fallback);
+    }
+}
+
+if (! function_exists('club_contact_image_url')) {
+    function club_contact_image_url(?\App\Models\Club $club, string $fallback = 'images/contact-us-image.jpg'): string
+    {
+        return storage_or_asset($club?->contact_image, $fallback);
+    }
+}
+
+if (! function_exists('game_cover_image_url')) {
+    function game_cover_image_url(?\App\Models\Game $game, int $index = 0): string
+    {
+        $fallback = 'images/match-highlight-image-'.(($index % 6) + 1).'.jpg';
+
+        return storage_or_asset($game?->cover_image, $fallback);
+    }
+}
+
+if (! function_exists('landing_brand_logo_url')) {
+    function landing_brand_logo_url(?\App\Models\Club $club = null): string
+    {
+        if (! $club) {
+            $club = app(\App\Services\LandingDataService::class)->featuredClub();
+        }
+
+        if (is_custom_media_path($club?->logo)) {
+            return asset('storage/'.$club->logo);
+        }
+
+        return neodunk_asset(config('landing.brand.logo', 'images/logo.svg'));
+    }
+}
+
+if (! function_exists('landing_favicon_url')) {
+    function landing_favicon_url(?\App\Models\Club $club = null): string
+    {
+        if (! $club) {
+            $club = app(\App\Services\LandingDataService::class)->featuredClub();
+        }
+
+        if (is_custom_media_path($club?->logo)) {
+            return asset('storage/'.$club->logo);
+        }
+
+        return neodunk_asset(config('landing.brand.favicon', 'images/favicon.png'));
+    }
+}
+
+if (! function_exists('landing_brand_name')) {
+    function landing_brand_name(?\App\Models\Club $club = null): string
+    {
+        if (! $club) {
+            $club = app(\App\Services\LandingDataService::class)->featuredClub();
+        }
+
+        return $club?->name ?? config('landing.brand.name', config('app.name'));
+    }
+}

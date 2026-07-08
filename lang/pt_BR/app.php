@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'dashboard' => 'Painel',
+    'login' => 'Entrar',
+    'logout' => 'Sair',
+    'save' => 'Salvar',
+    'update' => 'Atualizar',
+    'cancel' => 'Cancelar',
+    'edit' => 'Editar',
+    'view' => 'Ver',
+    'back' => 'Voltar',
+    'active' => 'Ativo',
+    'inactive' => 'Inativo',
+    'vs' => 'x',
+    'against' => 'contra',
+    'home' => 'Casa',
+    'away' => 'Fora',
+    'select' => 'Selecione',
+    'all' => 'Todos',
+    'general' => 'Geral',
+    'training' => 'Treino',
+    'game' => 'Jogo',
+    'no_records' => 'Nenhum registro encontrado.',
+    'site' => 'Site',
+];
