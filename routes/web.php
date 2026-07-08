@@ -12,6 +12,7 @@ use App\Http\Controllers\GameController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SponsorController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TrainingController;
@@ -61,6 +62,10 @@ Route::middleware('auth')->group(function () {
         Route::middleware('role:club')->group(function () {
             Route::get('/landing-clube', [ClubSettingsController::class, 'edit'])->name('club.settings.edit');
             Route::put('/landing-clube', [ClubSettingsController::class, 'update'])->name('club.settings.update');
+        });
+
+        Route::middleware('role:super_admin,club')->group(function () {
+            Route::resource('sponsors', SponsorController::class);
         });
 
         Route::middleware('role:super_admin,club,coach,assistant')->group(function () {

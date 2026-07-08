@@ -21,6 +21,7 @@ class LandingController extends Controller
             'teams' => $this->landing->teams($club, 4),
             'upcomingGames' => $this->landing->upcomingGames($club, 3),
             'featuredPlayers' => $this->landing->featuredPlayers($club, 4),
+            'sponsors' => $this->landing->sponsors($club),
         ]);
     }
 

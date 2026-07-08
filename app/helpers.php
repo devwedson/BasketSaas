@@ -177,6 +177,15 @@ if (! function_exists('landing_favicon_url')) {
     }
 }
 
+if (! function_exists('sponsor_logo_url')) {
+    function sponsor_logo_url(?\App\Models\Sponsor $sponsor, int $index = 0): string
+    {
+        $fallback = 'images/company-logo-'.(($index % 6) + 1).'.svg';
+
+        return storage_or_asset($sponsor?->logo, $fallback);
+    }
+}
+
 if (! function_exists('landing_brand_name')) {
     function landing_brand_name(?\App\Models\Club $club = null): string
     {

@@ -9,7 +9,9 @@ use App\Models\Club;
 use App\Models\Game;
 use App\Models\GameStat;
 use App\Models\Player;
+use App\Enums\SponsorTier;
 use App\Models\Season;
+use App\Models\Sponsor;
 use App\Models\Staff;
 use App\Models\Team;
 use App\Models\Training;
@@ -285,6 +287,32 @@ class DatabaseSeeder extends Seeder
                     );
                 }
             }
+        }
+
+        $sponsorsData = [
+            ['name' => 'Arena Sports', 'tier' => SponsorTier::Master, 'logo' => 'images/company-logo-1.svg', 'website' => 'https://example.com', 'contract_amount' => 50000, 'sort_order' => 0],
+            ['name' => 'FitPro Nutrition', 'tier' => SponsorTier::Gold, 'logo' => 'images/company-logo-2.svg', 'website' => 'https://example.com', 'contract_amount' => 25000, 'sort_order' => 10],
+            ['name' => 'Basquete Store', 'tier' => SponsorTier::Gold, 'logo' => 'images/company-logo-3.svg', 'contract_amount' => 20000, 'sort_order' => 11],
+            ['name' => 'Clínica Ortosport', 'tier' => SponsorTier::Silver, 'logo' => 'images/company-logo-4.svg', 'contract_amount' => 10000, 'sort_order' => 20],
+            ['name' => 'Transporte Rápido SP', 'tier' => SponsorTier::Partner, 'logo' => 'images/company-logo-5.svg', 'sort_order' => 30],
+            ['name' => 'AguaViva', 'tier' => SponsorTier::Partner, 'logo' => 'images/company-logo-6.svg', 'sort_order' => 31],
+        ];
+
+        foreach ($sponsorsData as $data) {
+            Sponsor::query()->updateOrCreate(
+                ['club_id' => $club->id, 'name' => $data['name']],
+                [
+                    'logo' => $data['logo'],
+                    'website' => $data['website'] ?? null,
+                    'tier' => $data['tier'],
+                    'contract_amount' => $data['contract_amount'] ?? null,
+                    'starts_at' => now()->startOfYear(),
+                    'ends_at' => now()->endOfYear(),
+                    'sort_order' => $data['sort_order'],
+                    'show_on_landing' => true,
+                    'is_active' => true,
+                ]
+            );
         }
     }
 }

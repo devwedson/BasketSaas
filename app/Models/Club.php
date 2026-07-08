@@ -65,4 +65,9 @@ class Club extends Model
     {
         return $this->hasMany(Game::class);
     }
+
+    public function sponsors(): HasMany
+    {
+        return $this->hasMany(Sponsor::class);
+    }
 }

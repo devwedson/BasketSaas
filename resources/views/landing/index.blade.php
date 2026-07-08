@@ -232,4 +232,12 @@
         </div>
     </div>
 </div>
+
+@if ($sponsors->isNotEmpty())
+<div class="our-sponsors">
+    <div class="container">
+        @include('landing.partials.sponsors-slider', ['sponsors' => $sponsors])
+    </div>
+</div>
+@endif
 @endsection

@@ -42,12 +42,20 @@
                 </li>
             @endif
 
-            @if (auth()->user()->hasRole(\App\Enums\UserRole::Club))
+            @if (auth()->user()->hasRole(\App\Enums\UserRole::SuperAdmin, \App\Enums\UserRole::Club))
                 <li class="menu-title">Site Público</li>
+                @if (auth()->user()->hasRole(\App\Enums\UserRole::Club))
+                    <li class="menu-item">
+                        <a href="{{ route('club.settings.edit') }}" class="menu-link {{ request()->routeIs('club.settings.*') ? 'active' : '' }}">
+                            <span class="menu-icon"><i class="ri-global-line"></i></span>
+                            <span class="menu-text">Landing do Clube</span>
+                        </a>
+                    </li>
+                @endif
                 <li class="menu-item">
-                    <a href="{{ route('club.settings.edit') }}" class="menu-link {{ request()->routeIs('club.settings.*') ? 'active' : '' }}">
-                        <span class="menu-icon"><i class="ri-global-line"></i></span>
-                        <span class="menu-text">Landing do Clube</span>
+                    <a href="{{ route('sponsors.index') }}" class="menu-link {{ request()->routeIs('sponsors.*') ? 'active' : '' }}">
+                        <span class="menu-icon"><i class="ri-hand-heart-line"></i></span>
+                        <span class="menu-text">Patrocinadores</span>
                     </a>
                 </li>
             @endif

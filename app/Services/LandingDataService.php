@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Club;
 use App\Models\Game;
 use App\Models\Player;
+use App\Models\Sponsor;
 use App\Models\Staff;
 use App\Models\Team;
 use App\Models\Training;
@@ -154,5 +155,20 @@ class LandingDataService
     public function featuredPlayers(?Club $club, int $limit = 4): Collection
     {
         return $this->players($club, $limit);
+    }
+
+    public function sponsors(?Club $club, int $limit = 12): Collection
+    {
+        if (! $club) {
+            return collect();
+        }
+
+        return Sponsor::query()
+            ->where('club_id', $club->id)
+            ->visibleOnLanding()
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->limit($limit)
+            ->get();
     }
 }
