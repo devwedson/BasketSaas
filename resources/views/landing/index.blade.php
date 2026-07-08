@@ -225,7 +225,7 @@
 
         <div class="row">
             <div class="col-lg-12">
-                <div class="section-footer-text wow fadeInUp" data-wow-delay="0.2s">
+                <div class="section-footer-text wow fadeInUp" data-wow-delay="0.4s">
                     <p>Do primeiro treino à excelência — <a href="{{ route('landing.team') }}">Veja a equipe completa</a></p>
                 </div>
             </div>
@@ -234,9 +234,28 @@
 </div>
 
 @if ($sponsors->isNotEmpty())
-<div class="our-sponsors">
+<div class="cta-box bg-section dark-section parallaxie">
     <div class="container">
-        @include('landing.partials.sponsors-slider', ['sponsors' => $sponsors])
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="cta-box-content">
+                    <div class="section-title section-title-center">
+                        <span class="section-sub-title wow fadeInUp">Fale Conosco</span>
+                        <h2 class="text-anime-style-3" data-cursor="-opaque">Pronto para treinar, competir ou entrar no clube?</h2>
+                        <p class="wow fadeInUp" data-wow-delay="0.2s">
+                            Seja atleta iniciante, competitivo ou torcedor — temos programas e oportunidades para todos. Entre em contato e dê o próximo passo na sua jornada no basquete.
+                        </p>
+                    </div>
+
+                    <div class="cta-box-btn wow fadeInUp" data-wow-delay="0.4s">
+                        <a href="{{ route('landing.contact') }}" class="btn-default">Entre em Contato</a>
+                        <a href="{{ route('landing.programs') }}" class="btn-default btn-highlighted">Conheça os Programas</a>
+                    </div>
+                </div>
+
+                @include('landing.partials.sponsors-slider', ['sponsors' => $sponsors])
+            </div>
+        </div>
     </div>
 </div>
 @endif
