@@ -18,7 +18,9 @@ class DashboardController extends Controller
         $clubId = $user->isSuperAdmin() ? null : $user->club_id;
 
         $stats = [
-            'clubs' => $this->countForClub(Club::query(), $clubId),
+            'clubs' => $user->isSuperAdmin()
+                ? Club::query()->count()
+                : ($clubId ? Club::query()->where('id', $clubId)->count() : 0),
             'teams' => $this->countForClub(Team::query(), $clubId),
             'players' => $this->countForClub(Player::query()->where('is_active', true), $clubId),
             'trainings' => $this->countForClub(
