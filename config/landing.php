@@ -36,6 +36,10 @@ return [
         'header_route' => env('LANDING_CTA_HEADER_ROUTE', 'login'),
     ],
 
+    'footer' => [
+        'newsletter_title' => env('LANDING_FOOTER_NEWSLETTER', 'Receba novidades exclusivas sobre jogos, eventos e o clube!'),
+    ],
+
     'testimonials' => [
         [
             'quote' => 'Treinar neste clube elevou completamente meu jogo. A comissão técnica foca em fundamentos, estratégia e força mental — isso me deixou muito mais confiante em quadra.',

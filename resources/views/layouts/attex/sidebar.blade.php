@@ -35,6 +35,12 @@
                     </a>
                 </li>
                 <li class="menu-item">
+                    <a href="{{ route('landing.settings.edit') }}" class="menu-link {{ request()->routeIs('landing.settings.*') ? 'active' : '' }}">
+                        <span class="menu-icon"><i class="ri-global-line"></i></span>
+                        <span class="menu-text">Landing / Site</span>
+                    </a>
+                </li>
+                <li class="menu-item">
                     <a href="{{ route('smtp.settings.edit') }}" class="menu-link {{ request()->routeIs('smtp.settings.*') ? 'active' : '' }}">
                         <span class="menu-icon"><i class="ri-mail-settings-line"></i></span>
                         <span class="menu-text">SMTP / E-mail</span>

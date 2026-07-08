@@ -35,6 +35,7 @@
             <a href="{{ route('calendar.index') }}" class="btn btn-sm bg-light text-dark dark:bg-gray-700 dark:text-gray-200"><i class="ri-calendar-line me-1"></i> Calendário</a>
             <a href="{{ route('reports.index') }}" class="btn btn-sm bg-light text-dark dark:bg-gray-700 dark:text-gray-200"><i class="ri-file-chart-line me-1"></i> Relatórios</a>
             @if (auth()->user()->isSuperAdmin())
+                <a href="{{ route('landing.settings.edit') }}" class="btn btn-sm bg-primary text-white"><i class="ri-global-line me-1"></i> Landing</a>
                 <a href="{{ route('smtp.settings.edit') }}" class="btn btn-sm bg-secondary text-white"><i class="ri-mail-settings-line me-1"></i> SMTP</a>
             @endif
         </div>

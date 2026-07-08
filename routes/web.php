@@ -10,6 +10,7 @@ use App\Http\Controllers\ClubSettingsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\LandingController;
+use App\Http\Controllers\LandingSettingsController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SponsorController;
@@ -57,6 +58,8 @@ Route::middleware('auth')->group(function () {
             Route::post('/configuracoes/smtp/teste', [SmtpSettingsController::class, 'test'])->name('smtp.settings.test');
             Route::get('/configuracoes/smtp/preview/ativacao', [SmtpSettingsController::class, 'previewActivation'])->name('smtp.settings.preview.activation');
             Route::get('/configuracoes/smtp/preview/ativacao/frame', [SmtpSettingsController::class, 'previewActivationFrame'])->name('smtp.settings.preview.activation.frame'); // iframe
+            Route::get('/configuracoes/landing', [LandingSettingsController::class, 'edit'])->name('landing.settings.edit');
+            Route::put('/configuracoes/landing', [LandingSettingsController::class, 'update'])->name('landing.settings.update');
         });
 
         Route::middleware('role:club')->group(function () {

@@ -14,7 +14,7 @@
             <div class="col-lg-12">
                 <div class="footer-header">
                     <div class="footer-header-title">
-                        <h2>Receba novidades exclusivas sobre jogos, eventos e o clube!</h2>
+                        <h2>{{ config('landing.footer.newsletter_title') }}</h2>
                     </div>
 
                     <div class="footer-newsletter-form">

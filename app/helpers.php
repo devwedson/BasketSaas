@@ -158,7 +158,13 @@ if (! function_exists('landing_brand_logo_url')) {
             return asset('storage/'.$club->logo);
         }
 
-        return neodunk_asset(config('landing.brand.logo', 'images/logo.svg'));
+        $brandLogo = config('landing.brand.logo', 'images/logo.svg');
+
+        if (is_custom_media_path($brandLogo)) {
+            return asset('storage/'.$brandLogo);
+        }
+
+        return neodunk_asset($brandLogo);
     }
 }
 
@@ -173,7 +179,13 @@ if (! function_exists('landing_favicon_url')) {
             return asset('storage/'.$club->logo);
         }
 
-        return neodunk_asset(config('landing.brand.favicon', 'images/favicon.png'));
+        $favicon = config('landing.brand.favicon', 'images/favicon.png');
+
+        if (is_custom_media_path($favicon)) {
+            return asset('storage/'.$favicon);
+        }
+
+        return neodunk_asset($favicon);
     }
 }
 
