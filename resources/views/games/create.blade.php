@@ -18,6 +18,6 @@
     'formAction' => route('games.store'),
     'enctype' => 'multipart/form-data',
 ])
-    @include('games._form')
+    @include('games._form', ['game' => null])
 @include('partials.attex.form-card-close', ['cancelUrl' => route('games.index'), 'submitLabel' => 'Salvar Jogo'])
 @endsection

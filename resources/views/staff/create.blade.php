@@ -18,6 +18,6 @@
     'formAction' => route('staff.store'),
     'enctype' => 'multipart/form-data',
 ])
-    @include('staff._form')
+    @include('staff._form', ['staff' => null])
 @include('partials.attex.form-card-close', ['cancelUrl' => route('staff.index'), 'submitLabel' => 'Salvar Membro'])
 @endsection

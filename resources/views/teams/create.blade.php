@@ -18,6 +18,6 @@
     'formAction' => route('teams.store'),
     'enctype' => 'multipart/form-data',
 ])
-    @include('teams._form')
+    @include('teams._form', ['team' => null])
 @include('partials.attex.form-card-close', ['cancelUrl' => route('teams.index'), 'submitLabel' => 'Salvar Time'])
 @endsection

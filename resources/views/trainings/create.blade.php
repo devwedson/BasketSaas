@@ -17,6 +17,6 @@
     'formSubtitle' => 'Data, local, exercícios e observações',
     'formAction' => route('trainings.store'),
 ])
-    @include('trainings._form')
+    @include('trainings._form', ['training' => null])
 @include('partials.attex.form-card-close', ['cancelUrl' => route('trainings.index'), 'submitLabel' => 'Salvar Treino'])
 @endsection

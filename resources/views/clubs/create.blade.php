@@ -18,6 +18,6 @@
     'formAction' => route('clubs.store'),
     'enctype' => 'multipart/form-data',
 ])
-    @include('clubs._form')
+    @include('clubs._form', ['club' => null])
 @include('partials.attex.form-card-close', ['cancelUrl' => route('clubs.index'), 'submitLabel' => 'Salvar Clube'])
 @endsection

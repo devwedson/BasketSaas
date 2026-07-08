@@ -18,6 +18,6 @@
     'formAction' => route('players.store'),
     'enctype' => 'multipart/form-data',
 ])
-    @include('players._form')
+    @include('players._form', ['player' => null])
 @include('partials.attex.form-card-close', ['cancelUrl' => route('players.index'), 'submitLabel' => 'Salvar Jogador'])
 @endsection

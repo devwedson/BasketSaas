@@ -6,6 +6,7 @@ use App\Models\Club;
 use App\Services\LandingSettingsService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class LandingSettingsController extends Controller
